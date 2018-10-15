@@ -11,18 +11,18 @@ github_repo: "https://github.com/playboyzhang/playboyzhang.github.io.git" # you 
 
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
-sidebar-about-description: "test"
+sidebar-about-description: "follow your heart"
 sidebar-avatar: /img/about-me.jpg     # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
 
 # SNS settings 社交账号
 RSS: false
-# weibo_username:     daydreamboy
-zhihu_username:     daydreamboy
+weibo_username:     playboyzhang
+#zhihu_username:     daydreamboy
 github_username:    playboyzhang
-facebook_username:  daydreamboy
-jianshu_username:   daydreamboy
+facebook_username:  playboyzhang
+#jianshu_username:   daydreamboy
 #twitter_username:   daydreamboy
 
 
