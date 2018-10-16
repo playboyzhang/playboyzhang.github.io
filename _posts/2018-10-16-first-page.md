@@ -1,6 +1,7 @@
+---
 layout: post
-title: "随笔"
-subtitle: '随笔-（一）
+title: "随笔-（一）"
+subtitle: '简单的记一记'
 author: "BOY"
 header-style: text
 tags:
@@ -10,6 +11,7 @@ tags:
 
 
 我看了这么多大佬的博客后，终于搭建了一个自己的博客。
+---
 
 在此真的很感谢HUX的博客，而我最后也参考了他的模板。
 
