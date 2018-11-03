@@ -3,8 +3,6 @@ layout: post
 title: "随笔-（一）"
 subtitle: '简单的记一记'
 author: "BOY"
-header-img: "img/heart.jpg"
-header-mask: 0.3
 tags:
   - 随笔
 ---
