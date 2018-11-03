@@ -1,8 +1,8 @@
 # Site settings
 title: BOY Blog
 SEOTitle: boy的博客 | BOY Blog
-header-img: img/post-bg-desk.jpg
-email: boyzhanglw@gmail.com
+header-img: img/public-post/post-bg-desk.jpg
+email: sillyboyzhang@gmail.com
 description: "Every failure is leading towards success."
 keyword: "BOY, BOY Blog"
 url: "http://playboyzhang.github.io"          # your host, for absolute URL
@@ -12,7 +12,7 @@ github_repo: "https://github.com/playboyzhang/playboyzhang.github.io.git" # you 
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
 sidebar-about-description: "follow your heart"
-sidebar-avatar: /img/about-me.jpg     # use absolute URL, seeing it's used in both `/` and `/about/`
+sidebar-avatar: /img/public-post/about-me.jpg     # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
 
