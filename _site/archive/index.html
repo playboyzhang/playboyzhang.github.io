@@ -10,7 +10,18 @@
     <meta name="keywords"  content="立伟, BOY Blog，一只刚刚本科毕业的运维攻城狮，对未来充满干劲">
     <meta name="theme-color" content="#000000">
     
-    <title>Tags - 立伟的博客 | BOY Blog</title>
+       <!-- Open Graph -->
+       <meta property="og:title" content="Archive - 立伟的博客 | BOY Blog">
+       
+       <meta property="og:type" content="website">
+       <meta property="og:description" content="keep hungry keep foolish">
+       
+       <meta property="og:image" content="http://localhost:4000/img/public-post/about-me.jpg">
+       <meta property="og:url" content="http://localhost:4000/archive/">
+       <meta property="og:site_name" content="立伟的博客 | BOY Blog">
+
+
+    <title>Archive - 立伟的博客 | BOY Blog</title>
 
     <!-- Web App Manifest -->
     <link rel="manifest" href="/pwa/manifest.json">
@@ -22,7 +33,7 @@
     <link rel="apple-touch-icon" href="/img/public-post/apple-touch-icon.png">
     
     <!-- Canonical URL -->
-    <link rel="canonical" href="http://localhost:4000/tags/">
+    <link rel="canonical" href="http://localhost:4000/archive/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -62,7 +73,9 @@
 <body ontouchstart="">
 
     <!-- Navigation -->
+
 <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header page-scroll">
@@ -83,13 +96,25 @@
                         <a href="/">Home</a>
                     </li>
                     
+                    
+                    
+                    
                     <li>
                         <a href="/about/">About</a>
                     </li>
                     
+                    
+                    
                     <li>
-                        <a href="/tags/">Tags</a>
+                        <a href="/archive/">Archive</a>
                     </li>
+                    
+                    
+                    
+                    
+                    
+                    
+                    
                     
                 </ul>
             </div>
@@ -152,49 +177,64 @@
 </script>
 
 
-    <!-- Page Header -->
+    <!-- 
+Credits: this page shamelessly borrowed a lot from:
+https://github.com/kitian616/jekyll-TeXt-theme
+-->
+<!-- Page Header -->
+
+
+
+
+
+
+
 <header class="intro-header" style="background-image: url('/img/public-post/tag-bg.jpg')">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <div class="site-heading" id="tag-heading">
-                    <h1>Tags</h1>
-                    <span class="subheading">keep hungry keep foolish</span>
-                </div>
-            </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        
+        <div class="site-heading" id="tag-heading">
+        
+          <h1>Archive</h1>
+          <span class="subheading">keep hungry keep foolish</span>
         </div>
+      </div>
     </div>
+  </div>
 </header>
+
 
 <!-- Main Content -->
 <div class="container">
 	<div class="row">
 		<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-            <!-- 标签云 -->
-			<div id='tag_cloud' class="tags">
+			<!-- Tags (as filter) -->
+			<div id='tag_cloud' class="tags tags-sup js-tags">
+				<a class="tag-button--all" data-encode="">
+					Show All
+					<sup>1</sup>
+				</a>
+
 				
-				<a href="#随笔" title="随笔" rel="1">随笔</a>
+        
+				
+				</a>
+				
+				<a data-sort="0000"
+					data-encode="%E9%9A%8F%E7%AC%94"
+					class="tag-button"
+					title="随笔" rel="1">
+					随笔
+					<sup>1</sup>
 				
 			</div>
 
-            <!--<blockquote class="tag-comments">
-                标签命名规范：
-                    <li>行业观察、职位、公司优先使用中文</li>
-                    <li>外国产品、术语优先使用英文</li>
-            </blockquote>-->
-
-            <!-- 标签列表 -->
-			
-			<div class="one-tag-list">
-			  	<span class="fa fa-tag listing-seperator" id="随笔">
-                    <span class="tag-text">随笔</span>
-                </span>
-				
-				  <!-- <li class="listing-item">
-				  <time datetime="2018-10-16">2018-10-16</time>
-				  <a href="/2018/10/16/first-page/" title="随笔-（一）">随笔-（一）</a>
-				  </li> -->
-				 <div class="post-preview">
+            <!-- Article List -->
+			<div class="mini-post-list js-result d-none"><section>
+				<span class="fa listing-seperator">
+					<span class="tag-text">2018</span>
+				</span><div class="post-preview item" data-tags="%E9%9A%8F%E7%AC%94">
 				    <a href="/2018/10/16/first-page/">
 				        <h2 class="post-title">
                             随笔-（一）
@@ -205,13 +245,9 @@
 				        </h3>
 				        
 				    </a>
-				    <!-- <p class="post-meta">2018-10-16</p> -->
+					<hr>
 				</div>
-				<hr>
-				
-			</div>
 			
-
 		</div>
 	</div>
 </div>
@@ -222,56 +258,59 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <ul class="list-inline text-center">
-                    
-                    <!-- add jianshu add target = "_blank" to <a> by BOY -->
-                    
-                            <li>
-                                <a target="_blank" href="https://www.jianshu.com/u/0dcf24792ccf">
-                                    <span class="fa-stack fa-lg">
-                                        <i class="fa fa-circle fa-stack-2x"></i>
-                                        <i class="fa  fa-stack-1x fa-inverse">简</i>
-                                    </span>
-                                </a>
-                            </li>
-                    
-                    
-                    <li>
-                        <a href="https://twitter.com/boyzhanglw">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
-                    </li>
-                    
-
-                    <!-- add Weibo, Zhihu by Hux, add target = "_blank" to <a> by Hux -->
-                    
-                    
-                    <li>
-                        <a target="_blank" href="http://weibo.com/playboyzhang">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
-                    </li>
-                    
+                 <!-- SNS Link -->
+                 
 
 
-                    
-                    
-                    <li>
-                        <a target="_blank" href="https://github.com/playboyzhang">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-circle fa-stack-2x"></i>
-                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                            </span>
-                        </a>
-                    </li>
-                    
-                </ul>
+<ul class="list-inline text-center">
+
+
+  
+  
+  <li>
+      <a target="_blank" href="https://www.jianshu.com/u/0dcf24792ccf">
+          <span class="fa-stack fa-lg">
+              <i class="fa fa-circle fa-stack-2x"></i>
+              <i class="fa  fa-stack-1x fa-inverse">简</i>
+          </span>
+      </a>
+  </li>
+  
+  
+  <li>
+    <a href="https://twitter.com/boyzhanglw">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+  
+  <li>
+    <a target="_blank" href="http://weibo.com/playboyzhang">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+  
+  <li>
+    <a target="_blank" href="https://github.com/playboyzhang">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+</ul>
+                
                 <p class="copyright text-muted">
                     Copyright &copy; BOY Blog 2018
                     <br>
@@ -296,18 +335,11 @@
 <!-- Custom Theme JavaScript -->
 <script src="/js/hux-blog.min.js "></script>
 
+
 <!-- Service Worker -->
 
-<script type="text/javascript">
-    if(navigator.serviceWorker){
-        // For security reasons, a service worker can only control the pages that are in the same directory level or below it. That's why we put sw.js at ROOT level.
-        navigator.serviceWorker
-            .register('/sw.js')
-            .then((registration) => {console.log('Service Worker Registered. ', registration)})
-            .catch((error) => {console.log('ServiceWorker registration failed: ', error)})
-    }
-</script>
-
+<script src="/js/snackbar.js "></script>
+<script src="/js/sw-registration.js "></script>
 
 
 <!-- async load function -->
@@ -344,17 +376,16 @@
 
 <!-- jquery.tagcloud.js -->
 <script>
-    // only load tagcloud.js in tag.html
-    if($('#tag_cloud').length !== 0){
         async('/js/jquery.tagcloud.js',function(){
             $.fn.tagcloud.defaults = {
                 //size: {start: 1, end: 1, unit: 'em'},
-                color: {start: '#bbbbee', end: '#0085a1'},
+                color: {start: '#bbbbee', end: '#2f93b4'},
             };
             $('#tag_cloud a').tagcloud();
         })
-    }
-</script>
+    </script>
+    <script src='/js/archive.js '></script>
+    
 
 <!--fastClick.js -->
 <script>
@@ -402,9 +433,11 @@
 
 
 
-
 <!-- Side Catalog -->
 
+
+
+<!-- Multi-Lingual -->
 
 
 
