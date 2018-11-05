@@ -5,98 +5,13 @@ description: "努力努力再努力！"
 header-img: "img/public-post/post-bg-rwd.jpg"
 ---
 
-<!-- Language Selector -->
-<!-- <select class="sel-lang" onchange= "onLanChange(this.options[this.options.selectedIndex].value)">
-    <option value="0" selected> 中文 Chinese </option>
-    <option value="1"> 英文 English </option>
-</select> -->
 
 <!-- Chinese Version -->
 <div class="zh post-container">
-
-    <!--copied from markdown -->
-    <blockquote><p>上九天揽月<br>
-    下五洋捉鳖<br>
-    </p></blockquote>
-
-    <p>Hey，我是<strong>BOYZHANG</strong>，刚刚大学毕业，现在上海工作，从事运维方向的工作。</p>
-
-    <p>每天净想着一些不着边际的事，总是梦想做个文青。</p>
-
-   <!-- <p>这是我的利用 <a href="https://pages.github.com/">GitHub Pages</a> 与 <a href="http://jekyll.com.cn/">Jekyll</a> 搭建的 个人博客。我在GitHub主页<a href="https://github.com/playboyzhang">GitHub·BY</a> </p> -->
-
-    <p>目前正在不断的学习中，并不断记录与分享自己所学，希望自己可以不断进步。</p>
-    
-    <h5>Talks</h5>
-
-    <ul>
-        <li><a href="https://github.com">GitHub</a></li>
-        <li><a href="http://jekyll.com.cn/">jekyll</a></li>
-        <li><a href="http://huangxuan.me/">Hux</a></li> 
-        <li><a href="https://analytics.google.com/analytics">Google Analytics</a></li>
-    </ul>
+    {% capture about_zh %}{% include about/zh.md %}{% endcapture %}
+    {{ about_zh | markdownify }}
 </div>
 
-<!-- English Version -->
-<!-- <div class="en post-container">
-    <blockquote><p>Yet another iOS Developer. <br>
-    Yet another Life-long Student.</p></blockquote>
-
-    <p>Hi, I am <strong>Baiying Qiu</strong>，you can call me <strong>BY</strong>. I am an iOS software engineer and currently working in Xiamen</p>
-
-    <p>This is my personal blog, through making Github Pages and Jekyll.My GitHub  👉 <a href="http://github.com/qiubaiying">Github·BY</a>.</p>
-    
-    <p>I am a sports enthusiast, I like fitness, running and boxing.</p>
-
-    <h5>Talks</h5>
-
-    <ul>
-    <li><a href="https://github.com">GitHub</a></li>
-    <li><a href="http://jekyll.com.cn/">jekyll</a></li>
-    <li><a href="https://pages.github.com/">GitHub Pages</a></li>
-    <li><a href="https://playboyzhang.github.io">BY</a></li>
-    </ul>
-</div> -->
-
-<!-- Handle Language Change -->
-<script type="text/javascript">
-    // get nodes
-    var $zh = document.querySelector(".zh");
-    var $en = document.querySelector(".en");
-    var $select = document.querySelector("select");
-
-    // bind hashchange event
-    window.addEventListener('hashchange', _render);
-
-    // handle render
-    function _render(){
-        var _hash = window.location.hash;
-        // en
-        if(_hash == "#en"){
-            $select.selectedIndex = 1;
-            $en.style.display = "block";
-            $zh.style.display = "none";
-        // zh by default
-        }else{
-            // not trigger onChange, otherwise cause a loop call.
-            $select.selectedIndex = 0;
-            $zh.style.display = "block";
-            $en.style.display = "none";
-        }
-    }
-
-    // handle select change
-    function onLanChange(index){
-        if(index == 0){
-            window.location.hash = "#zh"
-        }else{
-            window.location.hash = "#en"
-        }
-    }
-
-    // init
-    _render();
-</script>
 
 
 <!-- Gitalk 评论 start  -->
