@@ -5,8 +5,8 @@
     <description>Every failure is leading towards success.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 05 Nov 2018 19:42:05 +0800</pubDate>
-    <lastBuildDate>Mon, 05 Nov 2018 19:42:05 +0800</lastBuildDate>
+    <pubDate>Thu, 22 Nov 2018 20:52:02 +0800</pubDate>
+    <lastBuildDate>Thu, 22 Nov 2018 20:52:02 +0800</lastBuildDate>
     <generator>Jekyll v3.8.4</generator>
     
       <item>
@@ -37,6 +37,97 @@
         <guid isPermaLink="true">http://localhost:4000/2018/10/16/first-page/</guid>
         
         <category>随笔</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>centos、ubuntu下nessus安装及离线更新</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;linux（centos、ubuntu）下安装、激活Nessus（上次在csdn写的不够详尽，故在这里在发表一次）&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;nessus是一款扫描漏洞的工具，现将自己安装过程记录如下：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;注册Nessus家庭版激活码，获取软件下载链接&lt;/p&gt;
+
+&lt;p&gt;http://www.tenable.com/products/nessus-home&lt;/p&gt;
+
+&lt;p&gt;注册成功后邮箱会接收到一个&lt;strong&gt;active code&lt;/strong&gt;（推荐开始注册的时候选择网上的临时邮箱，因为一个邮箱只能注册一次）&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/in-post/2018-10-02-nessus/register.png&quot; alt=&quot;注册页面&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;注册成功后跳转下载页面&quot;&gt;注册成功后跳转下载页面&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/in-post/2018-10-02-nessus/register-next.png&quot; alt=&quot;这里写图片描述&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;程序下载地址外网下载有点慢贴出自己百度云存放的安装包&quot;&gt;程序下载地址（外网下载有点慢，贴出自己百度云存放的安装包）&lt;/h3&gt;
+&lt;p&gt;链接：https://pan.baidu.com/s/1CNsLkEPa2nqaj8YAQ7Tz-A 密码：dmjy&lt;/p&gt;
+
+&lt;h4 id=&quot;安装默认选择安装在opt目录下&quot;&gt;安装（默认选择安装在opt目录下）&lt;/h4&gt;
+
+&lt;p&gt;&lt;strong&gt;centos&lt;/strong&gt;
+&lt;img src=&quot;\img\in-post\2018-10-02-nessus\install-centos.png&quot; alt=&quot;安装命令&quot; /&gt;
+&lt;strong&gt;ubantu&lt;/strong&gt;
+&lt;img src=&quot;\img\in-post\2018-10-02-nessus\install-ubuntu.png&quot; alt=&quot;安装命令&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;安装成功后即可启动服务启动服务命令如下&quot;&gt;安装成功后即可启动服务，启动服务命令如下&lt;/h3&gt;
+
+&lt;p&gt;service nessusd start&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;此处有两种更新的方式，一种连接外网直接/opt/nessus/sbin/nessuscli update，另外一种是离线更新&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;离线更新plugins&quot;&gt;离线更新plugins&lt;/h3&gt;
+
+&lt;h3 id=&quot;获取challenge&quot;&gt;获取challenge&lt;img src=&quot;\img\in-post\2018-10-02-nessus\get-challenge.png&quot; alt=&quot;这里写图片描述&quot; /&gt;&lt;/h3&gt;
+
+&lt;p&gt;当前命令目录是/opt/nessus/sbin，通过nessuscli fetch –challenge获取challenge码
+/opt/nessus/sbin/nessuscli fetch –challenge&lt;/p&gt;
+
+&lt;h3 id=&quot;获取成功后需到官网地址填写challenge与active-code下载离线更新的license与更新包&quot;&gt;获取成功后需到官网地址，填写challenge与active code，下载离线更新的license与更新包&lt;/h3&gt;
+
+&lt;p&gt;https://plugins.nessus.org/v2/offline.php&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;\img\in-post\2018-10-02-nessus\challenge-nessus.png&quot; alt=&quot;这里写图片描述&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;将获取到的license文件离线更新包上传到服务器我直接上传到了optnessussbin目录&quot;&gt;将获取到的license文件、离线更新包上传到服务器（我直接上传到了/opt/nessus/sbin/目录）&lt;/h4&gt;
+
+&lt;h3 id=&quot;注册license当前目录为optnessussbin&quot;&gt;注册license（当前目录为/opt/nessus/sbin/）&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;\img\in-post\2018-10-02-nessus\register-challenge.png&quot; alt=&quot;这里写图片描述&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;手动更新离线包&quot;&gt;手动更新离线包&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;\img\in-post\2018-10-02-nessus\update-manual.png&quot; alt=&quot;这里写图片描述&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;./nessuscli update all-2.0.tar.gz
+重启下服务service nessusd restart后&lt;/p&gt;
+
+&lt;h3 id=&quot;网页管理页面&quot;&gt;网页管理页面&lt;/h3&gt;
+
+&lt;p&gt;https://服务器ip:8834
+&lt;img src=&quot;\img\in-post\2018-10-02-nessus\host-nessus.png&quot; alt=&quot;等待更新&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;编译更新完成后，即可进入系统&lt;/p&gt;
+
+&lt;h3 id=&quot;如需修改nessus-web端口&quot;&gt;如需修改Nessus Web端口&lt;/h3&gt;
+
+&lt;p&gt;使用
+./nessuscli fix –set xmlrpc_listen_port=端口
+修改默认端口&lt;/p&gt;
+
+&lt;h3 id=&quot;遇到的问题&quot;&gt;遇到的问题：&lt;/h3&gt;
+
+&lt;p&gt;由于是在虚拟机中搭建，上传离线更新包的时候（大概200多M）没有注意，虚拟机的磁盘空间已满，所以每次更新都会报错，后清理空间完全上传后，完成离线包的更新。&lt;/p&gt;
+
+</description>
+        <pubDate>Tue, 02 Oct 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2018/10/02/nessus/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018/10/02/nessus/</guid>
+        
+        <category>nessus</category>
+        
+        <category>linux</category>
         
         
       </item>
