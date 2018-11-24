@@ -28,12 +28,13 @@ csdn_username:      m0_37917446
 
 # Build settings
 # from 2016, 'pygments' is unsupported on GitHub Pages. Use 'rouge' for highlighting instead.
+highlighter: rouge
 permalink: pretty
 paginate: 10
-exclude: ["less","node_modules","Gruntfile.js","package.json","README.md"]
+exclude: ["less","node_modules","Gruntfile.js","package.json","README.md","README.zh.md"]
 anchorjs: true                          # if you want to customize anchor. check out line:181 of `post.html`
-
-
+# If you have timezone issue (e.g. #68) in China, uncomment to use this:
+#timezone: CN  
 
 # Gems
 # from PR#40, to support local preview for Jekyll 3.0
@@ -48,7 +49,6 @@ plugins: [jekyll-paginate]
 # although redcarpet can auto highlight code, the lack of header-id make the catalog impossible, so I switch to kramdown
 # document: http://jekyllrb.com/docs/configuration/#kramdown
 markdown: kramdown
-highlighter: rouge
 kramdown:
   input: GFM                         # use Github Flavored Markdown !important
   syntax_highlighter_opts:
