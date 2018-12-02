@@ -21,9 +21,11 @@ tags:
 - 一般用在 for 循环当中
 
 ### 语法 
+
 ```
 enumerate(sequence, [start=0])
 ```
+
 - sequence -- 一个序列、迭代器或其他支持迭代对象。
 - start -- 下标起始位置。
 
@@ -37,12 +39,12 @@ enumerate(sequence, [start=0])
 在一个列表中，如果既要遍历索引，又要遍历元素时：
 - 不用enumerate
 
-```
 
-seasons = ['Spring', 'Summer', 'Fall', 'Winter']  
-for i in range(len(seasons))  
-    print (i,seasons[i])  
-```
+
+      seasons = ['Spring', 'Summer', 'Fall', 'Winter']  
+      for i in range(len(seasons))  
+          print (i,seasons[i])  
+
 
 结果
 
