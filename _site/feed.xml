@@ -5,8 +5,8 @@
     <description>Every failure is leading towards success.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 03 Dec 2018 20:14:26 +0800</pubDate>
-    <lastBuildDate>Mon, 03 Dec 2018 20:14:26 +0800</lastBuildDate>
+    <pubDate>Mon, 03 Dec 2018 21:05:56 +0800</pubDate>
+    <lastBuildDate>Mon, 03 Dec 2018 21:05:56 +0800</lastBuildDate>
     <generator>Jekyll v3.8.4</generator>
     
       <item>
@@ -37,6 +37,43 @@
         <guid isPermaLink="true">http://localhost:4000/2018/10/16/first-page/</guid>
         
         <category>随笔</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>读书笔记</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;满地都是六便士，他却抬头看见了月亮。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;讲真第一次听说这个名字的时候还是很早很早以前，总感觉书里的故事应该很有趣。&lt;/p&gt;
+
+&lt;p&gt;前段时间终于有机会读了下（其实以前也读过，不过读了个开头就读不下去了），其实这样的文章对于我不怎么读这种文学类书籍的人有些难以入门。&lt;/p&gt;
+
+&lt;p&gt;读到书中的斯特里克兰抛弃结婚十七年的妻子与尚未成年的一双孩子，离家出走到巴黎去追求绘画去了，这让我真的匪夷所思，完全理解不了他这种行为意义。&lt;/p&gt;
+
+&lt;p&gt;但是像斯特里克兰前段人生的样子却在我们生活的随处可见，大家过着平庸的日子，被生活磨去了棱角。&lt;/p&gt;
+
+&lt;p&gt;读完整本书其实我只做了两段摘抄：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;世界冰冷而残酷。没有人知道我们从哪里来，到哪里去。我们必须看到宁静之美。我们必须隐忍的生活，这样命运之神才不会注视我们。让我们追求淳朴、善良者的爱吧。他们的无知比我们的知识更可贵。让我们保持沉默，满足于我们小小的角落，像他们一样平静温顺吧。这才是生活的智慧。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;“一个女人可以原谅一个男人的伤害。” 他说：”但永远不能原谅对她所做的牺牲“&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;愿我能抬起头，不被现实的卑微所禁锢，抬头看到我心中的那一轮明月。&lt;/p&gt;
+</description>
+        <pubDate>Sat, 06 Oct 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2018/10/06/read-Moon-and-Sixpence/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018/10/06/read-Moon-and-Sixpence/</guid>
+        
+        <category>读书</category>
+        
+        <category>文学类</category>
         
         
       </item>
