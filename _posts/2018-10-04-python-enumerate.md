@@ -85,7 +85,7 @@ tags:
 
 ```python
   flag = 0
-  for index, line in enumerate(open(filepath,'r'))： 
+  for index, line in enumerate(open(filepath,'r')): 
       flag += 1
   print(flag)
 ```
