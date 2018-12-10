@@ -37,13 +37,25 @@
                 <div class="post-heading">
                     <div class="tags">
                         {% for tag in page.tags %}
-                        <a class="tag" href="{{ site.baseurl }}/archive/?tag={{ tag | url_encode }}" title="{{ tag }}">{{ tag }}</a>
+                        <a class="tag" href="{{ site.baseurl }}/tags/#{{ tag }}" title="{{ tag }}">{{ tag }}</a>
                         {% endfor %}
                     </div>
                     <h1>{{ page.title }}</h1>
-                    {% comment %} always create a h2 for keeping the margin {% endcomment %}
+                    {% comment %}
+                        always create a h2 for keeping the margin , Hux
+                    {% endcomment %}
+                    {% comment %} if page.subtitle {% endcomment %}
                     <h2 class="subheading">{{ page.subtitle }}</h2>
-                    <span class="meta">Posted by {% if page.author %}{{ page.author }}{% else %}{{ site.title }}{% endif %} on {{ page.date | date: "%B %-d, %Y" }}</span>
+                    {% comment %} endif {% endcomment %}
+                    <span class="meta"><i class="fa fa-user" aria-hidden="true"></i>&nbsp;{% if site.author %}{{ site.author }}{% else %}{{ site.title }}{% endif %}&nbsp;&nbsp;&nbsp;<i class="fa fa-calendar" aria-hidden="true"></i>&nbsp;&nbsp;{{ page.date | date: "%Y-%m-%d" }}&nbsp;&nbsp;&nbsp;<i class="fa fa-check-square-o" aria-hidden="true"></i>{{ content | strip_html | strip_newlines | size }}&nbsp;words&nbsp;&nbsp;
+
+                    <br/>
+
+                    <p></p>
+                     {% if page.updated %}
+                     Updated on {{ page.updated | date: "%B %-d, %Y" }}
+                     {% endif %}
+                   </span>
                 </div>
             </div>
         </div>
@@ -75,14 +87,23 @@
                 <div class="post-heading">
                     <div class="tags">
                         {% for tag in page.tags %}
-                        <a class="tag" href="{{ site.baseurl }}/archive/?tag={{ tag | url_encode }}" title="{{ tag }}">{{ tag }}</a>
+                        <a class="tag" href="{{ site.baseurl }}/tags/#{{ tag }}" title="{{ tag }}">{{ tag }}</a>
                         {% endfor %}
                     </div>
                     <h1>{{ page.title }}</h1>
-                    {% comment %} always create a h2 for keeping the margin {% endcomment %}
+                    {% comment %}
+                        always create a h2 for keeping the margin , Hux
+                    {% endcomment %}
+                    {% comment %} if page.subtitle {% endcomment %}
                     <h2 class="subheading">{{ page.subtitle }}</h2>
-                    <span class="meta">Posted by {% if page.author %}{{ page.author }}{% else %}{{ site.title }}{% endif %}
-                        on {{ page.date | date: "%B %-d, %Y" }}</span>
+                    {% comment %} endif {% endcomment %}
+                    <span class="meta"><i class="fa fa-user" aria-hidden="true"></i>&nbsp;{% if site.author %}{{ site.author }}{% else %}{{ site.title }}{% endif %}&nbsp;&nbsp;&nbsp;<i class="fa fa-calendar" aria-hidden="true"></i>&nbsp;&nbsp;{{ page.date | date: "%Y-%m-%d" }}&nbsp;&nbsp;&nbsp;<i class="fa fa-check-square-o" aria-hidden="true"></i>{{ content | strip_html | strip_newlines | size }}&nbsp;words&nbsp;&nbsp;
+                    <br/>
+                    <p></p>
+                     {% if page.updated %}
+                     Updated on {{ page.updated | date: "%B %-d, %Y" }}
+                     {% endif %}
+                   </span>
                 </div>
             </div>
         </div>
