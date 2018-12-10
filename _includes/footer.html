@@ -7,8 +7,16 @@
                  {% include sns-links.html center=true %}
                 
                 <p class="copyright text-muted">
-                    Copyright {{ site.time | date: '%Y' }} <i class="fa fa-heart" aria-hidden="true" style="color: #0085A1"></i> Boy's zhang. Powered by Jekyll&GitHub.</p> 
-                    <p class="copyright text-muted" id="count"></p>
+                    Copyright {{ site.time | date: '%Y' }} <i class="fa fa-heart" aria-hidden="true" style="color: #0085A1"></i> Boy's zhang. Powered by <a href="http://jekyllcn.com/">Jekyll</a>&GitHub.
+                    <br>
+                    您是本站第<span id="busuanzi_value_site_uv"></span>位小伙伴.&nbsp;&nbsp;
+                    <span id="busuanzi_container_site_pv">
+                        本站总访问量<span id="busuanzi_value_site_pv"></span>次.
+                    </span>
+                    <br>
+                    <span class="copyright text-muted" id="count"></span>
+                </p>
+                
 
 
 
@@ -23,6 +31,9 @@
         </div>
     </div>
 </footer>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
 
 <script>
   
