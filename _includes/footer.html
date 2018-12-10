@@ -7,19 +7,40 @@
                  {% include sns-links.html center=true %}
                 
                 <p class="copyright text-muted">
-                    Copyright &copy; {{ site.title }} {{ site.time | date: '%Y' }}
-                    <br>
-                    Theme on <a href="{{ site.github_repo }}">GitHub</a> |
-                    <iframe
+                    Copyright {{ site.time | date: '%Y' }} <i class="fa fa-heart" aria-hidden="true" style="color: #0085A1"></i> Boy's zhang. Powered by Jekyll&GitHub.</p> 
+                    <p class="copyright text-muted" id="count"></p>
+
+
+
+
+                    <!-- Theme on <a href="{{ site.github_repo }}">GitHub</a>  -->
+                    <!-- <iframe
                         style="margin-left: 2px; margin-bottom:-5px;"
                         frameborder="0" scrolling="0" width="100px" height="20px"
                         src="https://ghbtns.com/github-btn.html?user={{ site.github_username }}&repo={{ site.github_username }}.github.io&type=star&count=true" >
-                    </iframe>
-                </p>
+                    </iframe> -->
             </div>
         </div>
     </div>
 </footer>
+
+<script>
+  
+    window.setInterval('counter()',1000);
+    function counter(){
+      var date=new Date();
+      var startDate=new Date(2018,06,28,0,0,0);
+      var time=(date-startDate)/1000;
+      var day=Math.floor(time/(24*60*60));
+      var hour=Math.floor(time%(24*60*60)/(60*60));
+      var minute=Math.floor(time%(24*60*60)%(60*60)/60);
+      var second=Math.floor(time%(24*60*60)%(60*60)%60);
+      var str="我的博客已默默运行了" + day + "天" + hour +"时" + minute + "分" + second + "秒";
+      document.getElementById('count').innerHTML=str;
+    }
+
+  </script>
+
 
 <!-- jQuery -->
 <script src="{{ "/js/jquery.min.js " | prepend: site.baseurl }}"></script>
