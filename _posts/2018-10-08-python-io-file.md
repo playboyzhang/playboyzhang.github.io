@@ -3,13 +3,11 @@ layout:      post
 title:       "python学习记录"
 subtitle:    "io模块分割文件"
 date:        2018-10-08
-author:      "BOY"
+author:      "Boy's Zhang"
 header-img:  "img/post-bg-python.jpg"
 tags:
   - python
-  - 文件名
-  - 文件目录
-  - 文件后缀
+  - os
 ---
 
 

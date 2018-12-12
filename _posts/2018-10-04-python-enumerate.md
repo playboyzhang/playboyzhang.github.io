@@ -3,12 +3,11 @@ layout:      post
 title:       "python学习记录"
 subtitle:    "enumerate函数"
 date:        2018-10-04
-author:      "BOY"
+author:      "Boy's Zhang"
 header-img:  "img/post-bg-python.jpg"
 tags:
   - python
   - enumerate()
-  - 文件行数
 ---
 
 

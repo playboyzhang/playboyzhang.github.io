@@ -3,7 +3,7 @@ layout:      post
 title:       "读书笔记"
 subtitle:    "------小王子"
 date:        2018-10-03
-author:      "BOY"
+author:      "Boy's Zhang"
 header-img:  "img/post-bg-read-littleprince.jpg"
 tags:
   - 读书

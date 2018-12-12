@@ -2,7 +2,7 @@
 layout: post
 title: "随笔-（一）"
 subtitle: '简单的记一记'
-author: "BOY"
+author: "Boy's Zhang"
 tags:
   - 随笔
 ---
