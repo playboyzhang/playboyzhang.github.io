@@ -40,7 +40,25 @@ var returnCitySN =
 ```
 搜狐另外的IP地址查询接口：http://txt.go.sohu.com/ip/soip 
 ```js
-String.prototype.getQueryString=function(v){var reg=new RegExp("(^|&|\\?)" + v + "=([^&]*)(&|$)"), r;if(r=this.match(reg)){return unescape(r[2]);}return null;};var sohu_IP_Loc="unknown",LocUrl=document.location.href;if((LocUrl.indexOf("sohusce.com") >= 0)||(LocUrl.indexOf("sohu.com") >= 0)||(LocUrl.indexOf("chinaren.com") >= 0)||(LocUrl.indexOf("17173.com") >= 0)||(LocUrl.indexOf("focus.cn") >= 0)){window.sohu_user_ip="114.114.114.114";sohu_IP_Loc="CN310000";sohu_IP_Loc_V="CN";}var AdLoc2=sohu_IP_Loc.substr(0,2),AdLoc4=sohu_IP_Loc.substr(0,4),AdLoc6=sohu_IP_Loc.substr(0,6);if(window.location.href.getQueryString("ip"))sohu_IP_Loc=AdLoc2=AdLoc4=AdLoc6=window.location.href.getQueryString("ip");
+String.prototype.getQueryString = function(v) {
+    var reg = new RegExp("(^|&|\\?)" + v + "=([^&]*)(&|$)"),
+    r;
+    if (r = this.match(reg)) {
+        return unescape(r[2]);
+    }
+    return null;
+};
+var sohu_IP_Loc = "unknown",
+LocUrl = document.location.href;
+if ((LocUrl.indexOf("sohusce.com") >= 0) || (LocUrl.indexOf("sohu.com") >= 0) || (LocUrl.indexOf("chinaren.com") >= 0) || (LocUrl.indexOf("17173.com") >= 0) || (LocUrl.indexOf("focus.cn") >= 0)) {
+    window.sohu_user_ip = "114.114.114.114";
+    sohu_IP_Loc = "CN310000";
+    sohu_IP_Loc_V = "CN";
+}
+var AdLoc2 = sohu_IP_Loc.substr(0, 2),
+AdLoc4 = sohu_IP_Loc.substr(0, 4),
+AdLoc6 = sohu_IP_Loc.substr(0, 6);
+if (window.location.href.getQueryString("ip")) sohu_IP_Loc = AdLoc2 = AdLoc4 = AdLoc6 = window.location.href.getQueryString("ip");
 ```
 IP  API查询接口：http://ip-api.com/json/　　# 国际化英文显示
 
