@@ -201,7 +201,7 @@ IP  API查询中文接口：http://ip-api.com/json/114.114.114.114?lang=zh-CN　
 
 ```
 
-IP  API查询接口：http://ip-api.com/json/114.114.114.114?lang=zh-CN　　# 查询某个ip的信息
+IP  API查询接口：http://ip-api.com/json/114.114.114.114　　# 查询某个ip的信息
 ```json
 {
     "as": "AS174 Cogent Communications", 
