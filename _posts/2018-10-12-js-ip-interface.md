@@ -143,7 +143,7 @@ http://ip-api.com/json/114.114.114.114?lang=zh-CN      #中文使用
 太平洋IP查询的更多接入方式：http://whois.pconline.com.cn/
 
 
-百度IP查询接口：http://api.map.baidu.com/location/ip?ak=你的密钥&ip=114.114.114.114   (没有申请key所以不贴结果了)
+百度IP查询接口：http://api.map.baidu.com/location/ip?ak=你的密钥&ip=114.114.114.114   
 
 ```json
 {
