@@ -34,22 +34,24 @@
         </div>
     </div>
 </footer>
+<!--不蒜子统计-->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
+<!--ip位置统计，接口为ip-api-->
 <script type="application/javascript">
 	function getgeoip(json){
-		var ip = json.ip;
+		var ip = json.query;
 		var Country = json.country;
-		var region = json.region;
+		var region = json.regionName;
         var city = json.city;
-        var str = "IP:" + ip +" Country:" + Country +" region:" + region +" city" +city
+        var str = "IP:" + ip +" Country:" + Country +" region:" + region +" city：" +city
         document.getElementById('geoip').innerHTML=str;
 	}
 </script>
 
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-<script type="application/javascript" src="https://api.ip.sb/geoip?callback=getgeoip"></script>
+<script type="application/javascript" src="http://ip-api.com/json?lang=zh-CN&callback=getgeoip"></script>
 
-
+<!--运行时间模块-->
 <script>
   
     window.setInterval('counter()',1000);
