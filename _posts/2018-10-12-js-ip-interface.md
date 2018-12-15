@@ -21,8 +21,6 @@ IP地址查询API接口
 1. 新浪的IP地址查询接口：`http://int.dpool.sina.com.cn/ `（测试，已挂）
 
 2. 搜狐IP地址查询接口（默认GBK）：`http://pv.sohu.com/cityjson`
-   
-
 ```js
 var returnCitySN = 
 {
@@ -32,8 +30,6 @@ var returnCitySN =
 }
 ```
 3. 搜狐IP地址查询接口（可设置编码）：`http://pv.sohu.com/cityjson?ie=utf-8`
-   
-
 ```js
 var returnCitySN = 
 {
@@ -67,7 +63,6 @@ if (window.location.href.getQueryString("ip")) sohu_IP_Loc = AdLoc2 = AdLoc4 = A
 5. IP  API查询接口：`http://ip-api.com/json/`　　# 国际化英文显示
 
     `http://ip-api.com/json/114.114.114.114?lang=zh-CN `     #中文使用
-
 ```json
 {
     "as": "AS174 Cogent Communications", 
@@ -95,8 +90,6 @@ if (window.location.href.getQueryString("ip")) sohu_IP_Loc = AdLoc2 = AdLoc4 = A
 1. 新浪的IP地址查询接口：`http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js`   （经测试，已挂）
 
     新浪多地域测试方法：`http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js&ip=114.114.114.114`  （经测试，已挂）
-
-
 
 2. 淘宝的IP地址查询接口：`http://ip.taobao.com/service/getIpInfo.php?ip=114.114.114.114`
 ```json
@@ -145,7 +138,6 @@ if (window.location.href.getQueryString("ip")) sohu_IP_Loc = AdLoc2 = AdLoc4 = A
 
 
 5. 百度IP查询接口：`http://api.map.baidu.com/location/ip?ak=你的密钥&ip=114.114.114.114 `  
-
 ```json
 {
     "address":"CN|江苏|徐州|None|CHINANET|0|0",
