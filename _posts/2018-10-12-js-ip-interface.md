@@ -18,9 +18,11 @@ tags:
 IP地址查询API接口
 =====================
 
-新浪的IP地址查询接口：http://int.dpool.sina.com.cn/ （测试，已挂）
+1. 新浪的IP地址查询接口：`http://int.dpool.sina.com.cn/ `（测试，已挂）
 
-搜狐IP地址查询接口（默认GBK）：http://pv.sohu.com/cityjson
+2. 搜狐IP地址查询接口（默认GBK）：`http://pv.sohu.com/cityjson`
+   
+
 ```js
 var returnCitySN = 
 {
@@ -29,7 +31,9 @@ var returnCitySN =
     "cname": "CHINA"
 }
 ```
-搜狐IP地址查询接口（可设置编码）：http://pv.sohu.com/cityjson?ie=utf-8
+3. 搜狐IP地址查询接口（可设置编码）：`http://pv.sohu.com/cityjson?ie=utf-8`
+   
+
 ```js
 var returnCitySN = 
 {
@@ -38,7 +42,7 @@ var returnCitySN =
     "cname": "CHINA"
 }
 ```
-搜狐另外的IP地址查询接口：http://txt.go.sohu.com/ip/soip 
+4. 搜狐另外的IP地址查询接口：`http://txt.go.sohu.com/ip/soip `
 ```js
 String.prototype.getQueryString = function(v) {
     var reg = new RegExp("(^|&|\\?)" + v + "=([^&]*)(&|$)"),
@@ -60,9 +64,9 @@ AdLoc4 = sohu_IP_Loc.substr(0, 4),
 AdLoc6 = sohu_IP_Loc.substr(0, 6);
 if (window.location.href.getQueryString("ip")) sohu_IP_Loc = AdLoc2 = AdLoc4 = AdLoc6 = window.location.href.getQueryString("ip");
 ```
-IP  API查询接口：http://ip-api.com/json/　　# 国际化英文显示
+5. IP  API查询接口：`http://ip-api.com/json/`　　# 国际化英文显示
 
-http://ip-api.com/json/114.114.114.114?lang=zh-CN      #中文使用
+    `http://ip-api.com/json/114.114.114.114?lang=zh-CN `     #中文使用
 
 ```json
 {
@@ -82,24 +86,19 @@ http://ip-api.com/json/114.114.114.114?lang=zh-CN      #中文使用
     "zip": ""
 }
 ```
-烧饼博客查询接口：https://api.ip.sb/jsonip
-```json
-{
-    "ip": "114.114.114.114"
-}
-```
+
 
 
 查询IP归属地的接口
 =====================
 
-新浪的IP地址查询接口：http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js   （经测试，已挂）
+1. 新浪的IP地址查询接口：`http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js`   （经测试，已挂）
 
-新浪多地域测试方法：http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js&ip=114.114.114.114  （经测试，已挂）
+    新浪多地域测试方法：`http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js&ip=114.114.114.114`  （经测试，已挂）
 
 
 
-淘宝的IP地址查询接口：http://ip.taobao.com/service/getIpInfo.php?ip=114.114.114.114
+2. 淘宝的IP地址查询接口：`http://ip.taobao.com/service/getIpInfo.php?ip=114.114.114.114`
 ```json
 {
     "code": 0, 
@@ -121,11 +120,13 @@ http://ip-api.com/json/114.114.114.114?lang=zh-CN      #中文使用
 }
 ```
 
-聚合（普通用户被限制次数）的IP地址查询接口：http://apis.juhe.cn/ip/ip2addr?ip=114.114.114.114&dtype=&key=[yourKey]    (没有申请key所以不贴结果了)
+3. 聚合（普通用户被限制次数）的IP地址查询接口：`http://apis.juhe.cn/ip/ip2addr?ip=114.114.114.114&dtype=&key=[yourKey]`    (没有申请key所以不贴结果了)
 
 
 
-太平洋IP地址库API接口：http://whois.pconline.com.cn/ipJson.jsp?ip=114.114.114.114&json=true
+4. 太平洋IP地址库API接口：  `http://whois.pconline.com.cn/ipJson.jsp?ip=114.114.114.114&json=true`
+   
+   太平洋IP查询的更多接入方式：`http://whois.pconline.com.cn/`
 ```json
 {
     "ip": "114.114.114.114", 
@@ -140,10 +141,10 @@ http://ip-api.com/json/114.114.114.114?lang=zh-CN      #中文使用
     "err": ""
 }
 ```
-太平洋IP查询的更多接入方式：http://whois.pconline.com.cn/
 
 
-百度IP查询接口：http://api.map.baidu.com/location/ip?ak=你的密钥&ip=114.114.114.114   
+
+5. 百度IP查询接口：`http://api.map.baidu.com/location/ip?ak=你的密钥&ip=114.114.114.114 `  
 
 ```json
 {
@@ -167,7 +168,7 @@ http://ip-api.com/json/114.114.114.114?lang=zh-CN      #中文使用
 }
 ```
 
-IPIP查询接口： http://freeapi.ipip.net/118.28.8.8 免费接口（限速每天1000次，且只提供地理位置）
+6. IPIP查询接口： `http://freeapi.ipip.net/118.28.8.8` 免费接口（限速每天1000次，且只提供地理位置）
 ```json
 [
     "中国", 
@@ -180,7 +181,7 @@ IPIP查询接口： http://freeapi.ipip.net/118.28.8.8 免费接口（限速每�
 
 
 
-IP  API查询中文接口：http://ip-api.com/json/114.114.114.114?lang=zh-CN　　# 中文显示
+7. IP  API查询中文接口：`http://ip-api.com/json/114.114.114.114?lang=zh-CN`　　# 中文显示
 ```json
 {
     "as": "AS174 Cogent Communications", 
@@ -201,6 +202,29 @@ IP  API查询中文接口：http://ip-api.com/json/114.114.114.114?lang=zh-CN　
 
 ```
 
+调用方法：
+为解决跨域问题采用JSONP方式，本博客采用的就是这个API
+代码如下：
+```js
+
+<span class="copyright text-muted" id="count"></span>
+
+<script type="application/javascript">
+	function getgeoip(json){
+		var ip = json.query;
+		var Country = json.country;
+		var region = json.regionName;
+        var city = json.city;
+        var str = "IP:" + ip +" Country:" + Country +" region:" + region +" city：" +city
+        document.getElementById('geoip').innerHTML=str;
+	}
+</script>
+
+<script type="application/javascript" src="//ip-api.com/json?lang=zh-CN&callback=getgeoip"></script>
+```
+
+IP  APIde https接口需要付费，所以本站https访问时，无法加载此模块，http访问时可正常访问（暂时还没想到结解决方法）
+
 IP  API查询接口：http://ip-api.com/json/114.114.114.114　　# 查询某个ip的信息
 ```json
 {
@@ -220,7 +244,17 @@ IP  API查询接口：http://ip-api.com/json/114.114.114.114　　# 查询某个
     "zip": ""
 }
 ```
-烧饼博客查询接口：https://api.ip.sb/geoip/114.114.114.114
+
+
+8. 开源的[telize](https://github.com/fcambus/telize)的接口服务，可自行在服务器上搭建接口
+免费的可下载的IP数据库：
+
+- [纯真](http://www.cz88.net/fox/ipdat.shtml)
+- [maxmind](https://dev.maxmind.com/geoip/geoip2/geolite2/)
+
+    此博主采用这种方式搭建
+
+    烧饼博客查询接口：`https://api.ip.sb/geoip/114.114.114.114`
 ```json
 {
     "longitude": 113.7266, 
