@@ -191,7 +191,6 @@ if (window.location.href.getQueryString("ip")) sohu_IP_Loc = AdLoc2 = AdLoc4 = A
     "timezone": "Asia/Shanghai", 
     "zip": ""
 }
-
 ```
 
 调用方法：
@@ -236,11 +235,7 @@ IP  API查询接口：http://ip-api.com/json/114.114.114.114　　# 查询某个
     "zip": ""
 }
 ```
-
-
-8. 开源的[telize](https://github.com/fcambus/telize)的接口服务，可自行在服务器上搭建接口
-免费的可下载的IP数据库：
-
+8. 开源的[telize](https://github.com/fcambus/telize)的接口服务，可自行在服务器上搭建接口，免费的可下载的IP数据库：
 - [纯真](http://www.cz88.net/fox/ipdat.shtml)
 - [maxmind](https://dev.maxmind.com/geoip/geoip2/geolite2/)
 
