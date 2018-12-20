@@ -13,7 +13,7 @@ github_repo: "https://github.com/playboyzhang/playboyzhang.github.io.git" # you 
 
 
 # SNS settings 社交账号
-RSS: false
+RSS: true
 # twitter_username:   boyzhanglw
 weibo_username:     playboyzhang
 #zhihu_username:     daydreamboy
