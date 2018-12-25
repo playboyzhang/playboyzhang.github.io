@@ -5,6 +5,8 @@ subtitle:    "BCD 启动和故障恢复"
 date:        2018-10-15
 author:      "Boy's Zhang"
 header-img:  "img/post-bg-windows-cortana.jpg"
+music: true
+music-id:    1334647784
 tags:
   - windows
 ---
