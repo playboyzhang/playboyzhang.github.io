@@ -57,7 +57,7 @@ jekyll -v
 之后就可以输入jekyll serve开启本地的环境了
 
 ![jekyll-serve](/img/in-post/2018-10-01-jekyll-windows/jekyll-serve.png)
-###遇到的问题
+### 遇到的问题
 
 1、最后一步安装完成之后，出现错误
 ```
