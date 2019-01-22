@@ -5,14 +5,14 @@
     <description>Every failure is leading towards success.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 18 Jan 2019 22:09:39 +0800</pubDate>
-    <lastBuildDate>Fri, 18 Jan 2019 22:09:39 +0800</lastBuildDate>
+    <pubDate>Tue, 22 Jan 2019 20:58:22 +0800</pubDate>
+    <lastBuildDate>Tue, 22 Jan 2019 20:58:22 +0800</lastBuildDate>
     <generator>Jekyll v3.8.4</generator>
     
       <item>
         <title>上海旅游小攻略</title>
         <description>&lt;blockquote&gt;
-  &lt;p&gt;以前就写过相似的攻略，不过都遗失了，趁着这次有个好朋友来上海，好好总结一下。&lt;/p&gt;
+  &lt;p&gt;以前在上海逛总是想去哪就去哪，从大学到现在毕业也待了好几年了，趁着这次有个好朋友来上海，总结一下这些年在上海的吃喝玩乐。&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;h1 id=&quot;玩乐篇&quot;&gt;玩乐篇&lt;/h1&gt;
@@ -122,6 +122,43 @@
     &lt;/ol&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
+
+&lt;h1 id=&quot;吃喝篇&quot;&gt;吃喝篇&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;小吃类&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;生煎（小杨生煎）&lt;/li&gt;
+  &lt;li&gt;南翔小笼包&lt;/li&gt;
+  &lt;li&gt;葱油拌面&lt;/li&gt;
+  &lt;li&gt;锅贴&lt;/li&gt;
+  &lt;li&gt;排骨年糕&lt;/li&gt;
+  &lt;li&gt;黄鱼面&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;小菜类&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;熏鱼&lt;/li&gt;
+  &lt;li&gt;本帮红烧肉&lt;/li&gt;
+  &lt;li&gt;四喜烤麸&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;糕点类&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;青团（沈大成）&lt;/li&gt;
+  &lt;li&gt;葱油饼&lt;/li&gt;
+  &lt;li&gt;蝴蝶酥（哈尔滨食品厂）&lt;/li&gt;
+  &lt;li&gt;蟹壳黄（真老大房、吴宛饼家）&lt;/li&gt;
+  &lt;li&gt;鲜肉月饼（光明邨、老大昌、长春食品厂、泰康）&lt;/li&gt;
+&lt;/ol&gt;
 
 </description>
         <pubDate>Thu, 03 Jan 2019 00:00:00 +0800</pubDate>
