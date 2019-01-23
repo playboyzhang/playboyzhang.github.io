@@ -6,7 +6,7 @@ date:        2019-01-03
 author:      "Boy's Zhang"
 header-img:  "img/post-bg-shanghai.jpg"
 tags:
-  - linux
+  - 生活
 ---
 
 > 以前在上海逛总是想去哪就去哪，从大学到现在毕业也待了好几年了，趁着这次有个好朋友来上海，总结一下这些年在上海的吃喝玩乐。
