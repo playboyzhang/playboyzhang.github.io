@@ -5,9 +5,420 @@
     <description>Every failure is leading towards success.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Tue, 22 Jan 2019 20:58:22 +0800</pubDate>
-    <lastBuildDate>Tue, 22 Jan 2019 20:58:22 +0800</lastBuildDate>
+    <pubDate>Thu, 24 Jan 2019 10:02:26 +0800</pubDate>
+    <lastBuildDate>Thu, 24 Jan 2019 10:02:26 +0800</lastBuildDate>
     <generator>Jekyll v3.8.4</generator>
+    
+      <item>
+        <title>学习笔记</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;git基本总结&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h1 id=&quot;github上ssh-key的配置&quot;&gt;github上ssh key的配置&lt;/h1&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;git config &lt;span class=&quot;nt&quot;&gt;--global&lt;/span&gt; user.name &lt;span class=&quot;s2&quot;&gt;&quot;xuhaiyan&quot;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#添加上传git的名称&lt;/span&gt;
+git config &lt;span class=&quot;nt&quot;&gt;--global&lt;/span&gt; user.email &lt;span class=&quot;s2&quot;&gt;&quot;example@gmail.com&quot;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#添加用户邮箱&lt;/span&gt;
+ssh-keygen &lt;span class=&quot;nt&quot;&gt;-t&lt;/span&gt; rsa &lt;span class=&quot;nt&quot;&gt;-C&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;[email@email.com]&quot;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#生成密匙&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;1、将上述步骤生成的ssh-keygen添加到github相应帐户上&lt;/p&gt;
+
+&lt;p&gt;​   把&lt;code class=&quot;highlighter-rouge&quot;&gt;id_rsa.pub&lt;/code&gt;文件里的内容复制到这里&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/in-post/2019-01-23-github/in-pot-github-contact.png&quot; alt=&quot;in-pot-github-contact&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/in-post/2019-01-23-github/in-pot-github-sshkeys.png&quot; alt=&quot;in-pot-github-sshkeys&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/in-post/2019-01-23-github/in-pot-github-addsshkey.png&quot; alt=&quot;in-pot-github-addsshkey&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/in-post/2019-01-23-github/in-post-github-commitssh.png&quot; alt=&quot;in-post-github-commitssh&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/img/in-post/2019-01-23-github/in-post-github-addpanel.png&quot; alt=&quot;in-post-github-addpanel&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;2、测试连通性&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;ssh &lt;span class=&quot;nt&quot;&gt;-T&lt;/span&gt; git@github.com
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;​如果看到以下内容则证明连接成功&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;The authenticity of host &lt;span class=&quot;s1&quot;&gt;'github.com (207.97.227.239)'&lt;/span&gt; can&lt;span class=&quot;s1&quot;&gt;'t be established.
+RSA key fingerprint is 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48.
+Are you sure you want to continue connecting (yes/no)?
+&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h1 id=&quot;常用的git命令&quot;&gt;常用的git命令&lt;/h1&gt;
+
+&lt;p&gt;根据&lt;a href=&quot;http://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html&quot;&gt;阮一峰老师&lt;/a&gt;的总结我自己摘抄了一些自己经常用到的命令&lt;/p&gt;
+
+&lt;p&gt;基本的原理图如下&lt;img src=&quot;/img/in-post/2019-01-23-github/in-post-github-table.png&quot; alt=&quot;in-post-github-table&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;几个专用名词的译名如下：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Workspace：工作区&lt;/li&gt;
+  &lt;li&gt;Index / Stage：暂存区&lt;/li&gt;
+  &lt;li&gt;Repository：仓库区（或本地仓库）&lt;/li&gt;
+  &lt;li&gt;Remote：远程仓库&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;一、创建新仓库&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;c&quot;&gt;# 在当前目录新建一个Git代码库&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git init
+
+&lt;span class=&quot;c&quot;&gt;# 新建一个目录，将其初始化为Git代码库&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git init &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;project-name]
+
+&lt;span class=&quot;c&quot;&gt;# 下载一个项目和它的整个代码历史&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git clone &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;url]
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;二、添加、删除文件&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;c&quot;&gt;# 添加指定文件到暂存区&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git add &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file1] &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file2] ...
+
+&lt;span class=&quot;c&quot;&gt;# 添加指定目录到暂存区，包括子目录&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git add &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;dir&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 添加当前目录的所有文件到暂存区&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git add &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+
+
+&lt;span class=&quot;c&quot;&gt;# 删除工作区文件，并且将这次删除放入暂存区&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git &lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file1] &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file2] ...
+
+&lt;span class=&quot;c&quot;&gt;# 停止追踪指定文件，但该文件会保留在工作区&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git &lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--cached&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file]
+
+&lt;span class=&quot;c&quot;&gt;# 改名文件，并且将这个改名放入暂存区&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git &lt;span class=&quot;nb&quot;&gt;mv&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file-original] &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file-renamed]
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;三、提交&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;c&quot;&gt;# 提交暂存区到仓库区&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git commit &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;message]
+
+&lt;span class=&quot;c&quot;&gt;# 提交暂存区的指定文件到仓库区&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git commit &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file1] &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file2] ... &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;message]
+
+
+&lt;span class=&quot;c&quot;&gt;# 提交时显示所有diff信息&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git commit &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 使用一次新的commit，替代上一次提交&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 如果代码没有任何新变化，则用来改写上一次commit的提交信息&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git commit &lt;span class=&quot;nt&quot;&gt;--amend&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;message]
+
+&lt;span class=&quot;c&quot;&gt;# 重做上一次commit，并包括指定文件的新变化&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git commit &lt;span class=&quot;nt&quot;&gt;--amend&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file1] &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file2] ...
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;四、查看状态&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;c&quot;&gt;# 显示有变更的文件&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git status
+
+&lt;span class=&quot;c&quot;&gt;# 显示当前分支的版本历史&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git log
+
+&lt;span class=&quot;c&quot;&gt;# 显示commit历史，以及每次commit发生变更的文件&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git log &lt;span class=&quot;nt&quot;&gt;--stat&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 搜索提交历史，根据关键词&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git log &lt;span class=&quot;nt&quot;&gt;-S&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;keyword]
+
+&lt;span class=&quot;c&quot;&gt;# 显示某个commit之后的所有变动，每个commit占据一行&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git log &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;tag] HEAD &lt;span class=&quot;nt&quot;&gt;--pretty&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;format:%s
+
+&lt;span class=&quot;c&quot;&gt;# 显示某个commit之后的所有变动，其&quot;提交说明&quot;必须符合搜索条件&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git log &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;tag] HEAD &lt;span class=&quot;nt&quot;&gt;--grep&lt;/span&gt; feature
+
+&lt;span class=&quot;c&quot;&gt;# 显示某个文件的版本历史，包括文件改名&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git log &lt;span class=&quot;nt&quot;&gt;--follow&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file]
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git whatchanged &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file]
+
+&lt;span class=&quot;c&quot;&gt;# 显示指定文件相关的每一次diff&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git log &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file]
+
+&lt;span class=&quot;c&quot;&gt;# 显示过去5次提交&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git log &lt;span class=&quot;nt&quot;&gt;-5&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--pretty&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--oneline&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 显示所有提交过的用户，按提交次数排序&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git shortlog &lt;span class=&quot;nt&quot;&gt;-sn&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 显示指定文件是什么人在什么时间修改过&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git blame &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file]
+
+&lt;span class=&quot;c&quot;&gt;# 显示暂存区和工作区的差异&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git diff
+
+&lt;span class=&quot;c&quot;&gt;# 显示暂存区和上一个commit的差异&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git diff &lt;span class=&quot;nt&quot;&gt;--cached&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file]
+
+&lt;span class=&quot;c&quot;&gt;# 显示工作区与当前分支最新commit之间的差异&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git diff HEAD
+
+&lt;span class=&quot;c&quot;&gt;# 显示两次提交之间的差异&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git diff &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;first-branch]...[second-branch]
+
+&lt;span class=&quot;c&quot;&gt;# 显示今天你写了多少行代码&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git diff &lt;span class=&quot;nt&quot;&gt;--shortstat&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;@{0 day ago}&quot;&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 显示某次提交的元数据和内容变化&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git show &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;commit]
+
+&lt;span class=&quot;c&quot;&gt;# 显示某次提交发生变化的文件&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git show &lt;span class=&quot;nt&quot;&gt;--name-only&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;commit]
+
+&lt;span class=&quot;c&quot;&gt;# 显示某次提交时，某个文件的内容&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git show &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;commit]:[filename]
+
+&lt;span class=&quot;c&quot;&gt;# 显示当前分支的最近几次提交&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git reflog
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;五、同步&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;c&quot;&gt;# 下载远程仓库的所有变动&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git fetch &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;remote]
+
+&lt;span class=&quot;c&quot;&gt;# 显示所有远程仓库&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git remote &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 显示某个远程仓库的信息&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git remote show &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;remote]
+
+&lt;span class=&quot;c&quot;&gt;# 增加一个新的远程仓库，并命名&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git remote add &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;shortname] &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;url]
+
+&lt;span class=&quot;c&quot;&gt;# 取回远程仓库的变化，并与本地分支合并&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git pull &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;remote] &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;branch]
+
+&lt;span class=&quot;c&quot;&gt;# 上传本地指定分支到远程仓库&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git push &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;remote] &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;branch]
+
+&lt;span class=&quot;c&quot;&gt;# 强行推送当前分支到远程仓库，即使有冲突&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git push &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;remote] &lt;span class=&quot;nt&quot;&gt;--force&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 推送所有分支到远程仓库&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git push &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;remote] &lt;span class=&quot;nt&quot;&gt;--all&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;六、撤销&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;c&quot;&gt;# 恢复暂存区的指定文件到工作区&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git checkout &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file]
+
+&lt;span class=&quot;c&quot;&gt;# 恢复某个commit的指定文件到暂存区和工作区&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git checkout &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;commit] &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file]
+
+&lt;span class=&quot;c&quot;&gt;# 恢复暂存区的所有文件到工作区&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git checkout &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 重置暂存区的指定文件，与上一次commit保持一致，但工作区不变&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git reset &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file]
+
+&lt;span class=&quot;c&quot;&gt;# 重置暂存区与工作区，与上一次commit保持一致&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git reset &lt;span class=&quot;nt&quot;&gt;--hard&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 重置当前分支的指针为指定commit，同时重置暂存区，但工作区不变&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git reset &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;commit]
+
+&lt;span class=&quot;c&quot;&gt;# 重置当前分支的HEAD为指定commit，同时重置暂存区和工作区，与指定commit一致&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git reset &lt;span class=&quot;nt&quot;&gt;--hard&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;commit]
+
+&lt;span class=&quot;c&quot;&gt;# 重置当前HEAD为指定commit，但保持暂存区和工作区不变&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git reset &lt;span class=&quot;nt&quot;&gt;--keep&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;commit]
+
+&lt;span class=&quot;c&quot;&gt;# 新建一个commit，用来撤销指定commit&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 后者的所有变化都将被前者抵消，并且应用到当前分支&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git revert &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;commit]
+
+&lt;span class=&quot;c&quot;&gt;# 暂时将未提交的变化移除，稍后再移入&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git stash
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git stash pop
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</description>
+        <pubDate>Wed, 23 Jan 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2019/01/23/github/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/01/23/github/</guid>
+        
+        <category>学习笔记</category>
+        
+        
+      </item>
     
       <item>
         <title>上海旅游小攻略</title>
@@ -126,46 +537,46 @@
 &lt;h1 id=&quot;吃喝篇&quot;&gt;吃喝篇&lt;/h1&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;小吃类&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;小吃类&lt;/p&gt;
+
+    &lt;ol&gt;
+      &lt;li&gt;生煎（小杨生煎）&lt;/li&gt;
+      &lt;li&gt;南翔小笼包&lt;/li&gt;
+      &lt;li&gt;葱油拌面&lt;/li&gt;
+      &lt;li&gt;锅贴&lt;/li&gt;
+      &lt;li&gt;排骨年糕&lt;/li&gt;
+      &lt;li&gt;黄鱼面&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;小菜类&lt;/p&gt;
+
+    &lt;ol&gt;
+      &lt;li&gt;熏鱼&lt;/li&gt;
+      &lt;li&gt;本帮红烧肉&lt;/li&gt;
+      &lt;li&gt;四喜烤麸&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;糕点类&lt;/p&gt;
+
+    &lt;ol&gt;
+      &lt;li&gt;青团（沈大成）&lt;/li&gt;
+      &lt;li&gt;葱油饼&lt;/li&gt;
+      &lt;li&gt;蝴蝶酥（哈尔滨食品厂）&lt;/li&gt;
+      &lt;li&gt;蟹壳黄（真老大房、吴宛饼家）&lt;/li&gt;
+      &lt;li&gt;鲜肉月饼（光明邨、老大昌、长春食品厂、泰康）&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/li&gt;
 &lt;/ul&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;生煎（小杨生煎）&lt;/li&gt;
-  &lt;li&gt;南翔小笼包&lt;/li&gt;
-  &lt;li&gt;葱油拌面&lt;/li&gt;
-  &lt;li&gt;锅贴&lt;/li&gt;
-  &lt;li&gt;排骨年糕&lt;/li&gt;
-  &lt;li&gt;黄鱼面&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;小菜类&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;熏鱼&lt;/li&gt;
-  &lt;li&gt;本帮红烧肉&lt;/li&gt;
-  &lt;li&gt;四喜烤麸&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;糕点类&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;青团（沈大成）&lt;/li&gt;
-  &lt;li&gt;葱油饼&lt;/li&gt;
-  &lt;li&gt;蝴蝶酥（哈尔滨食品厂）&lt;/li&gt;
-  &lt;li&gt;蟹壳黄（真老大房、吴宛饼家）&lt;/li&gt;
-  &lt;li&gt;鲜肉月饼（光明邨、老大昌、长春食品厂、泰康）&lt;/li&gt;
-&lt;/ol&gt;
 
 </description>
         <pubDate>Thu, 03 Jan 2019 00:00:00 +0800</pubDate>
         <link>http://localhost:4000/2019/01/03/playinshanghai/</link>
         <guid isPermaLink="true">http://localhost:4000/2019/01/03/playinshanghai/</guid>
         
-        <category>linux</category>
+        <category>生活</category>
         
         
       </item>
@@ -1005,35 +1416,6 @@ a 3 adf
         <category>python</category>
         
         <category>enumerate()</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>读书笔记</title>
-        <description>&lt;blockquote&gt;
-  &lt;p&gt;这本书好久之前就读过，前段时间看kU会员里免费，就又借来读了一遍。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;第一次读的时候，感觉这本书很奇幻，以一个天马星空的世界来影射许多现实中的事。&lt;/p&gt;
-
-&lt;p&gt;小王子说：你这儿的人，在一个花园里种满五千朵玫瑰，却没能从中找到自己要的东西。&lt;/p&gt;
-
-&lt;p&gt;这本书说的是爱。遇到相似的人，有思想的高度共鸣，有情感模式的一致，就是没有不顾一切的勇气，所以好不过青春年少时的懵懂冲动，越是期待越是经不住一丝不合，所以好不过青春年少时的汹涌无畏。人们只愿意看到所有的好，恨不得ta就是完全按照理想打造的人物。&lt;/p&gt;
-
-&lt;p&gt;狐狸说：对你驯养过的东西，你永远负有责任。小王子说：只要用心，你们要找的东西在每一朵玫瑰或一点水里都能找到。心有戚戚焉，这需要彼此都很坚定的两个人，只有一方坚定另一方不断因为害怕而放弃的组合要修成正果会很艰难。开始相信老式婚姻的好，两个人抱着坚定的不可分割的决心让时间和耐心积累下去，执子之手与之偕老。&lt;/p&gt;
-
-&lt;p&gt;什么是成长，成长就是正视害怕并充分体验害怕，只有穿越害怕的区域才能拓宽自我的边界。爱情亦如是，不可替代的爱情来自理性判断基本面契合之后的风雨共度不离不弃，如今诱惑比比皆是，背叛的代价远不到令人覆灭，所以没有坚守即便五千朵玫瑰也找不到那朵独一无二的她。&lt;/p&gt;
-
-&lt;p&gt;世上那么多人，契合自己的人总归是有的。如果还期待小王子那样的爱情，那么就是做好自己，遇到那个人的时候无畏的爱，像盲目一样的爱。如今的我们已阅人无数，看过几眼就能判断出对方和自己的契合度，我们欠缺的不是技巧而是勇气和承担，所以觉得对了就爱吧，仿佛从来没受过伤一样。&lt;/p&gt;
-</description>
-        <pubDate>Wed, 03 Oct 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018/10/03/read-littleprince/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018/10/03/read-littleprince/</guid>
-        
-        <category>读书</category>
-        
-        <category>文学类</category>
         
         
       </item>
