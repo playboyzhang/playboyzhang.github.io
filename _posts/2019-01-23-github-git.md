@@ -1,12 +1,13 @@
 ---
 layout:      post
-title:       "学习笔记"
+title:       "git学习笔记"
 subtitle:    "----github常用命令总结"
 date:        2019-01-23
 author:      "Boy's Zhang"
 header-img:  "img/post-bg-github-cup.jpg"
 tags:
   - 学习笔记
+  - git
 ---
 
 > git基本总结
