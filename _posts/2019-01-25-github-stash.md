@@ -1,12 +1,13 @@
 ---
 layout:      post
-title:       "学习笔记--git"
+title:       "git学习笔记"
 subtitle:    "----git冲突解决"
 date:        2019-01-25
 author:      "Boy's Zhang"
 header-img:  "img/post-bg-github-cup.jpg"
 tags:
   - 学习笔记
+  - git
 ---
 
 > git上冲突解决方法
