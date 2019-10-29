@@ -10,6 +10,20 @@ tags:
   - 树莓派
 ---
 
+-----------------------------------------
+
+接触了这么多的密码管理器，最早入门开始使用的是开源的 KeePassX，整体的数据库是以文件的形式存放，同步过程可支持各种云服务器和WebDAV，使用过程中感觉不太好的就是界面比较丑，chrome插件和andrion客户端用的也不太好，我是用keepassX+onedrive实现全平台的同步。使用keepass唯一一点就是数据是在自己手上，比较放心。
+
+
+今年年初的时候入手了一个树莓派，然后就想着折腾折腾，无意中发现了bitwarden这个项目，当时最吸引我的几点是：这个项目的几个客户端体验都做得非常出色，自动填充功能很流畅；并且支持一次性密码（OTP 二次验证）。主要可以自建服务端。
+
+当时研究了一下，发现有几个缺点缺点：由于 Bitwarden 服务器使用 .Net 开发，如果使用 Docker 来部署，镜像体积过大；此外它使用 MSSQL 数据库，部署这个数据库对服务器要求比较高。而树莓派性能有限，我当时还部署了其他一些服务。
+
+直到后来在 GitHub 上搜索时发现有人用 Rust 实现了 Bitwarden 服务器，项目叫做 bitwarden_rs，并且提供了 Docker 镜像。这个实现更进一步降低了对机器配置的要求，并且 Docker 镜像体积很小，部署非常方便。此外，官方服务器中需要付费订阅的一些功能，通过自建服务端得以免费实现。故记录一下部署过程。
+
+-----------------------------------
+
+
 #安装Bitwarden服务器
 
 ##安装Docker
@@ -84,7 +98,9 @@ tags:
 
 + 创建单独的配置文件
 
-    /etc/nginxsites-enabled/my.conf
+    /etc/nginx/sites-enabled/my.conf
+    或者
+    /etc/nginx/conf.d/my.conf
 
 + 增加配置项
 
@@ -121,3 +137,25 @@ tags:
     docker-compose down && docker-compose up -d
 
 这样就关闭了用户注册功能，并禁用了 web vault 的访问。密码数据之后还是可以在客户端中进行编辑的。
+
+##遇到的问题
+
+
++ andrion与ios端登录不上（“发生错误 There is a problem connecting to the server” 错误）：
+
+```
+    经尝试更换https证书，关闭系统代理等登陆均未修复，后尝试放行http服务即可登陆
+
+```
+
+
++ 内网pc端登陆（“Failed to fetch” errors on desktop app）：
+
+```
+
+    登录地址为 https://192.168.1.100/
+
+    经尝试更换https证书，关闭系统代理等登陆均未修复，后尝试放行http服务，将地址改为http://192.168.1.100后修复
+```
+
+andrion与ios端登陆问题，可能为https证书导致，后续尝试更换证书提供商。
