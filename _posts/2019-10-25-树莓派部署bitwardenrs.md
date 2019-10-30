@@ -4,7 +4,7 @@ title:       "树莓派部署bitwardenrs"
 subtitle:    "----家庭密码中心"
 date:        2019-10-25
 author:      "Boy's Zhang"
-header-img:  "img/post-bg-bitwarden.png"
+header-img:  "img/post-bg-bitwarden.jpg"
 tags:
   - linux
   - 树莓派
@@ -24,14 +24,14 @@ tags:
 -----------------------------------
 
 
-#安装Bitwarden服务器
+# 安装Bitwarden服务器
 
-##安装Docker
+## 安装Docker
 
 具体安装方法可以看《linux上快速安装docker》。
 
 
-##准备bitwarden环境
+## 准备bitwarden环境
 
 假设你准备在主目录中存放数据，新建一个目录：
 ```
@@ -84,7 +84,7 @@ tags:
 
 以后对 bitwarden 服务做的所有操作，都需要预先进入这两个配置文件所在的目录内。
 
-##反向代理
+## 反向代理
 
 
 我这里选用了nginx做反向代理的工具，首先安装nginx
@@ -120,12 +120,12 @@ tags:
 
 ```
 
-##配置HTTPS
+## 配置HTTPS
 
 这方面的配置可以参考《快速为nginx配置https》。
 
 
-##关闭用户注册、关闭 web vault
+## 关闭用户注册、关闭 web vault
 
 现在你的 Bitwarden 服务器允许任何人注册帐号使用，你可能希望关闭这个功能。在前面生成的 config.env 中，调整以下两项值：
 
@@ -138,7 +138,7 @@ tags:
 
 这样就关闭了用户注册功能，并禁用了 web vault 的访问。密码数据之后还是可以在客户端中进行编辑的。
 
-##遇到的问题
+## 遇到的问题
 
 
 + andrion与ios端登录不上（“发生错误 There is a problem connecting to the server” 错误）：
