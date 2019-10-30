@@ -12,10 +12,10 @@ tags:
 
 -----------------------------------------
 
-接触了这么多的密码管理器，最早入门开始使用的是开源的 KeePassX，整体的数据库是以文件的形式存放，同步过程可支持各种云服务器和WebDAV，使用过程中感觉不太好的就是界面比较丑，chrome插件和andrion客户端用的也不太好，我是用keepassX+onedrive实现全平台的同步。使用keepass唯一一点就是数据是在自己手上，比较放心。
+接触了这么多的密码管理器，最早入门开始使用的是开源的 KeePassX，整体的数据库是以文件的形式存放，同步过程可支持各种云服务器和WebDAV，使用过程中感觉不太好的就是界面比较丑，chrome插件和andrion客户端用的也不太好，我是用keepassX+onedrive实现全平台的同步。使用keepass唯一一点就是数据是在自己手上，比较放心。后来浏览填充的插件不太好用就接触了lastpass，它的自动填充功能是真的好用，不过就是有些高级功能需要收费，密码的服务器不是自己管理，剩余的功能是真的好用。
 
 
-今年年初的时候入手了一个树莓派，然后就想着折腾折腾，无意中发现了bitwarden这个项目，当时最吸引我的几点是：这个项目的几个客户端体验都做得非常出色，自动填充功能很流畅；并且支持一次性密码（OTP 二次验证）。主要可以自建服务端。
+今年年初的时候入手了一个树莓派，然后就想着折腾折腾，无意中发现了bitwarden这个项目，当时最吸引我的几点就是这个项目的几个客户端体验都做得非常出色，自动填充功能很流畅；并且支持一次性密码（OTP 二次验证），还可以自建服务端（最后使用下来感觉就是个简化版的lastpass）。
 
 当时研究了一下，发现有几个缺点缺点：由于 Bitwarden 服务器使用 .Net 开发，如果使用 Docker 来部署，镜像体积过大；此外它使用 MSSQL 数据库，部署这个数据库对服务器要求比较高。而树莓派性能有限，我当时还部署了其他一些服务。
 
@@ -148,6 +148,17 @@ tags:
 
 ```
 
+```
+    网络解决方法：经过无数测试和搜索参考，最后将 docker/bitwarden/ssl 中的证书文件 cert.pem 命名为 fullchain.pem 后解决
+
+    具体参考 bitwarden_rs wiki 中 Enabling HTTPS 中的这段文字：
+
+    Due to what is likely a certificate validation bug in Android, you need to make sure that your certificate includes the full chain of trust. In the case of certbot, this means using fullchain.pem instead of cert.pem.
+
+
+
+```
+
 
 + 内网pc端登陆（“Failed to fetch” errors on desktop app）：
 
@@ -157,5 +168,7 @@ tags:
 
     经尝试更换https证书，关闭系统代理等登陆均未修复，后尝试放行http服务，将地址改为http://192.168.1.100后修复
 ```
-
+```
+    网络解决方法：查看群晖及容器都没有相关的日志记录，猜测是没有和服务端建立连接，最后测试发现和 Windows 系统代理设置有关。打开 “Windows 设置-网络和 Internet-代理”，关闭使用设置脚本即可。
+```
 andrion与ios端登陆问题，可能为https证书导致，后续尝试更换证书提供商。
