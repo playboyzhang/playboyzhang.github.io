@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Every failure is leading towards success.">
+    <meta name="keywords"  content="立伟, Boy's Zhang，一只刚刚本科毕业的运维攻城狮，对未来充满干劲">
+    <meta name="theme-color" content="#000000">
+    
+       <!-- Open Graph -->
+       <meta property="og:title" content="RHCSA考试总结 - 立伟的博客 | Boy's Zhang">
+       
+       <meta property="og:type" content="article">
+       <meta property="og:description" content="#RHCSA7考试题目总结
+
+">
+       
+       <meta property="article:published_time" content="2019-10-19T00:00:00Z">
+       
+       
+       <meta property="article:author" content="Boy's Zhang">
+       
+       
+       <meta property="article:tag" content="linux">
+       
+       
+       <meta property="og:image" content="http://localhost:4000/img/public-post/about-me.jpg">
+       <meta property="og:url" content="http://localhost:4000/2019/10/19/RHCSA%E8%80%83%E8%AF%95%E6%80%BB%E7%BB%93/">
+       <meta property="og:site_name" content="立伟的博客 | Boy's Zhang">
+
+
+    <title>RHCSA考试总结 - 立伟的博客 | Boy's Zhang</title>
+
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/pwa/manifest.json">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/img/public-post/favicon.ico">
+
+    <!-- Safari Webpage Icon    by-BY -->
+    <link rel="apple-touch-icon" href="/img/public-post/apple-touch-icon.png">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="http://localhost:4000/2019/10/19/RHCSA%E8%80%83%E8%AF%95%E6%80%BB%E7%BB%93/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    <!--   top css -->
+    <link rel="stylesheet" href="/css/rocket.css">
+    <link rel="stylesheet" href="/css/signature.css">
+    <link rel="stylesheet" href="/css/toc.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Boy's Zhang</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    
+                    
+                    
+                    <li>
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                    
+                    
+                    <li>
+                        <a href="/archive/">Archive</a>
+                    </li>
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    var __HuxNav__ = {
+        close: function(){
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        },
+        open: function(){
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+
+    // Bind Event
+    $toggle.addEventListener('click', function(e){
+        if ($navbar.className.indexOf('in') > 0) {
+            __HuxNav__.close()
+        }else{
+            __HuxNav__.open()
+        }
+    })
+
+    /**
+     * Since Fastclick is used to delegate 'touchstart' globally
+     * to hack 300ms delay in iOS by performing a fake 'click',
+     * Using 'e.stopPropagation' to stop 'touchstart' event from 
+     * $toggle/$collapse will break global delegation.
+     * 
+     * Instead, we use a 'e.target' filter to prevent handler
+     * added to document close HuxNav.  
+     *
+     * Also, we use 'click' instead of 'touchstart' as compromise
+     */
+    document.addEventListener('click', function(e){
+        if(e.target == $toggle) return;
+        if(e.target.className == 'icon-bar') return;
+        __HuxNav__.close();
+    })
+</script>
+
+
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-redhat.png" width="0" height="0"> -->
+
+<!--    打赏-->
+<link href="/css/reward.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+
+<!-- Post Header -->
+
+
+
+<style type="text/css">
+    header.intro-header{
+        position: relative;
+        background-image: url('/img/post-bg-redhat.png');
+        background: ;
+    }
+    
+</style>
+
+<header class="intro-header" >
+
+    <div class="header-mask"></div>
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#linux" title="linux">linux</a>
+                        
+                    </div>
+                    <h1>RHCSA考试总结</h1>
+                    
+                    
+                    <h2 class="subheading">----题目及答案分享</h2>
+                    
+                    <span class="meta"><i class="fa fa-user" aria-hidden="true"></i>&nbsp;Boy's Zhang&nbsp;&nbsp;&nbsp;<i class="fa fa-calendar" aria-hidden="true"></i>&nbsp;&nbsp;2019-10-19&nbsp;&nbsp;&nbsp;<i class="fa fa-check-square-o" aria-hidden="true"></i>4957&nbsp;words&nbsp;&nbsp;<span id="busuanzi_container_page_pv">
+                        <i class="fa fa-eye" aria-hidden="true"></i>&nbsp;<span id="busuanzi_value_page_pv">&</span>&nbsp;views</span>
+                    <br/>
+
+                    <p></p>
+                     
+                   </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+                <!-- CloudMusic -->
+                
+                <p>#RHCSA7考试题目总结</p>
+
+<p><strong>一、题库及答案分享</strong></p>
+
+<p>RHCSA考试：</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre>Hostname:station.rhce.cc
+IP address:192.168.122.100
+Netmask:255.255.255.0
+Gateway:192.168.122.1
+NameServer:192.168.122.10
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<p>前准备工作：</p>
+
+<ul>
+  <li>
+    <p>ROOT密码：redhat(考试根据考试要求设置密码)</p>
+
+    <p>破解密码，并将密码设置成redhat:
+  1、开机后按E ，删除rhgb quiet，写init=/bin/sh 在按Ctrl+x重启
+  2、mount –o remount,rw /
+  3、echo redhat | passwd –-stdin root
+  4、touch /.autorelabel
+  5、exec /sbin/init
+  备注：考试时可以systemctl isolate graphical.target</p>
+  </li>
+  <li>
+    <p>设置IP信息</p>
+
+    <p>编辑网卡文本：vim /etc/sysconfig/network-scripts/ifcfg-eth0
+  DEVICE=eth0
+  NAME=eth0
+  ONBOOT=yes
+  BOOTPROTO=none
+  IPADDR=192.168.122.100
+  NETMASK=255.255.255.0
+  GATEWAY=192.168.122.1
+  DNS1=192.168.122.10</p>
+  </li>
+  <li>
+    <p>设置主机名station.rhce.cc</p>
+
+    <p>命令：hostnamectl set-name station.rhce.cc</p>
+  </li>
+</ul>
+
+<hr />
+
+<p>考题：
+一、SELinux必须运行在Enforcing模式下</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre>1、查看selinux状态：getenforce
+2、把当前状态设置成enforcing：setenforce 1（重启后会失效）
+3、修改配置文件：vim /etc/selinux/config 中SELINUX=Enforcing
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<hr />
+
+<p>二、配置YUM源，使用地址ftp://server.rhce.cc/dvd</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="rouge-code"><pre>cd /etc/yum.reops.d 编辑文件aa.repo
+[aa]
+name=aa
+baseurl=ftp://server.rhce.cc/dvd
+enabled=1
+gpgcheck=0
+
+配置完成后，安装一个程序验证是否正确（例如：yum install vsftpd）
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<hr />
+
+<p>三、调整逻辑卷VO的大小，他的文件系统大小应该为290M。确保这个文件系统的内容仍然完整。注意：分区很少能精确到和要求的大小相同，因此在范围260M和320M之间都是可接受的。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre>Lvscan 查询逻辑卷大小
+扩展逻辑卷大小：lvextend –L +98M /dev/vg0/vo（根据实际情况复制逻辑卷）
+查看文件系统大小：df –hT
+XFS文件系扩展：xfs_growfs /dev/vg0/vo
+EXT4文件系统扩展：resize2fs /dev/vg0/vo
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<hr />
+
+<p>四、创建下面的用户、组和组成员关系：
+名字为adminuser的组 
+用户natasha，使用adminuser作为附属组
+用户harry，使用adminuser作为附属组
+用户sarah，在系统上不能访问可交互的shell且不是adminuser成员，natasha/harry/sarah密码都是redhat</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="rouge-code"><pre>groupadd adminuser
+useradd –G adminuser natasha
+useradd –G adminuser harry
+useradd –s /sbin/nologin sarah
+echo redhat | passwd --stdin natasha
+echo redhat | passwd –-stdin harry
+echo redhat | passwd –-stdin sarah
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<hr />
+
+<p>五、复制文件/etc/fstab到var/tmp/fstab。配置/var/tmp/fstab的权限如下：
+文件/var/tmp/fstab所有者是root，属于root组
+文件/var/tmp/fstab不能被任何用户执行
+用户natasha可读和可写/var/tmp/fstab，用户harry既不能读也不能写
+所有其他用户（现在和将来）具有读/var/tmp/fstab的能力</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre>复制文件：cp /etc/fstab /var/tmp/fstab
+setfacl –m u:natasha:rw- /var/tmp/fstab
+setfacl –m u:harry:--- /var/tmp/fstab
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<hr />
+
+<p>六、用户natasha必须配置一个cron job当地时间每天14:23运行，执行：/bin/echo hiya</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre>crontab –e –u natasha 编辑文本： 23 14 * * * /bin/echo hiya
+检查命令：crontab –l –u natasha
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<hr />
+
+<p>七、创建一个目录/home/admins，使之具有下面的特性：
+/home/adminuser所属组为adminuser
+这个目录对组adminuser的成员具有可读、可写和可执行。但是不是对其他任何用户（root可以访问系统上所有的文件和目录）
+在/home/admins下创建的任何文件所属组自动设置为adminuser</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre>mkdir /home/admins
+chgrp adminuser /home/admins
+chmod g+w /home/admins
+chmod o-rx /home/admins/ 
+chmod g+s /home/admins
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<hr />
+
+<p>八、从http://rhgls.rhce.cc/pub/updates安装合适的内核更新。下面的要求必须满足：
+更新的内核作为系统启动的默认内核
+原来的内核在系统刚启动的时候仍然可有效和可引导</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre>firefox http://rhgls.rhce.cc/pub/updates &amp;（SSH到考试机时一定要 –X）
+rpm -ivh kernel-3.10.0-229.el7.x86_64.rpm
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<hr />
+
+<p>九、系统host.rhce.cc提供了一个LDAP验证服务，你的系统按照下面要求绑定到这个服务：
+验证服务的基准DN是dc=rhce,dc=cc
+LDAP用于提供账号信息和验证信息连接应该使用位于http://host.rhce.cc/pub/domain11.crt的证书加密。 当正确配置后，ldapuser11可以登录你的系统，但是没有家目录，直到你完成autofs题目ldapuser11的密码是redhat</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre>安装：yum install authconfig-gtk.x86_64
+打开图形化界面：authconfig-gtk &amp;
+图形化界面选择LDAP， 安装提示软件包
+设置DN、服务器、下载CA证书（复制粘贴）
+（dc=rhce,dc=cc)   (host.rhce.cc)        (http://host.rhce.cc/pub/domain11.crt)
+用id ldapuser11验证
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<hr />
+
+<p>十、配置你的系统使它是rhgls.rhce.cc是一个NTP客户</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre>yum install system-config-date –y
+system-config-date &amp; 图形化界面设置删除原有server   添加rhgls.rhce.cc 点击确定
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<hr />
+
+<p>十一、配置autofs自动挂载LDAP用户的家目录，如下要求：
+host.rhce.cc(192.168.122.10)使用NFS共享了/home/guest给你的系统，这个文件系统包含了预先设置好的用户ldapuser11的家目录
+ldapuser11的家目录是在host.rhce.cc:/home/guests/ldapuser11
+ldapuser11的家目录应该自动挂载到本地/home/guest下面的/home/guests/ldapuser11
+家目录必须对用户具有可写权限 ldapuser11的密码是’redhat’</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="rouge-code"><pre>yum install autofs –y
+vim /etc/auto.master中添加/home/guests /etc/auto.aa
+cp /etc/auto.misc /etc/auto.aa
+vim /etc/auto.aa中添加：
+ldapuser11 -fstype=nfs,rw,vers=3 host.rhce.cc: /home/guests/ldapuser11
+重启服务：systemctl restart autofs 
+设置开机自动启动：systemctl enable autofs
+验证题目：su – ldapuser11
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<hr />
+
+<p>十二、创建一个用户alex， uid为3400 。这个用户的密码为redhat</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre>useradd –u 3400 alex
+echo redhat | passwd –-stdin alex
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<hr />
+
+<p>十三、为你的系统上额外添加一个大小为512M的交换分区，这个交换分区在系统启动的时候应该自动挂载。不要移除和更改你系统上现存的交换分区</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre>查看分区情况：lsblk
+fdisk /dev/sda
+创建一个主分区，创建扩展分区，创建交换分区(mkswap /dev/sda swapon –s /dev/sda)
+刷新分区表：partprobe
+设置自动挂载：vim /etc/fstab /dev/vda5 swap swap defaults 0 0 
+查看分区：swapon –a swapon –s
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<hr />
+
+<p>十四、找出所有所有者是ira的文件，并把它们拷贝到/root/findresults目录</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre>创建目录：mkdir /root/findresults
+查询+拷贝：find / -user ira –exec cp –a {} /root/findresults/ \;
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<hr />
+
+<p>十五、在/usr/share/dict/words中找出所有包含seismic的行。复制这些行并按照原来顺序放在文件/root/lines中。/root/lines应该没有空白行，所有的行必须是/usr/share/dict/words中原行的精确复制。</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre>grep seismic /usr/share/dict/words &gt; /root/lines
+cat /root/lines
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<hr />
+
+<p>十六、创建名为/root/backup.tar.bz2的备份文件，其中包含/usr/local的内容，tar必须使用bz2压缩</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre>cd /usr/local
+tar jcvf /root/backup.tar.bz2 * (如报错没有bzip2，则yum安装bzip2)
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+<hr />
+
+<p>十七、按照下面的要求创建一个新的逻辑卷：
+逻辑卷命名为database，属于卷组datastore，且大小为50个扩展，在卷组datastore的逻辑卷每个扩展的大小为16MB，使用ext3格式化这个新的逻辑卷，此逻辑卷在系统启动的时候应该能自动挂载到/mnt/database</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="rouge-code"><pre>lsblk
+fdisk /dev/vda
+创建扩展分区，改成逻辑分区(8e)
+pvscan 
+pvcreate /dev/vda6
+vgcreate –s 16 datastore /dev/vda6
+lvcreate -l 50 –n database datastore
+mkfs.vfat /dev/datastore/database（afat格式化）
+mkfs.ext4 /dev/datastore/database（ext4格式化）
+mkfs.xfs /dev/datastore/database( xfs格式化)
+创建目录：/mnt/database 
+vim /etc/fstab /dev/datastore/database /mnt/database vfat(格式根据考试要求) defaults 0 0
+检查挂载：mount –a df-hT
+</pre></td></tr></tbody></table></code></pre></div></div>
+
+
+                    
+                <hr style="visibility: hidden;">
+                
+                <centerquote>
+                    <div class="copyright-block">
+                        <p><strong>本文作者 Author：</strong> boy</p>
+                        <p><strong>本文链接 Link：</strong> daydreamboy.win/2019/10/19/RHCSA%E8%80%83%E8%AF%95%E6%80%BB%E7%BB%93/</p>
+                        <p><strong>版权声明 Copyright：</strong> 本博客所有文章除特别声明外，均采用 <a
+                                href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>
+                            许可协议。转载请注明出处！ All articles in this blog use the <a
+                                    href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>
+                            license agreement unless otherwise stated. Please indicate the source!</p>
+                    </div>
+                </centerquote>
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2019/10/18/RHCE%E8%80%83%E8%AF%95%E6%80%BB%E7%BB%93/" data-toggle="tooltip" data-placement="top" title="RHCE考试总结">
+                        Previous<br>
+                        <span>RHCE考试总结</span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2019/10/25/%E6%A0%91%E8%8E%93%E6%B4%BE%E9%83%A8%E7%BD%B2bitwardenrs/" data-toggle="tooltip" data-placement="top" title="树莓派部署bitwardenrs">
+                        Next<br>
+                        <span>树莓派部署bitwardenrs</span>
+                        </a>
+                    </li>
+                    
+                </ul>
+                <hr style="visibility: hidden;">
+
+
+            <!-- 打赏功能 -->
+            <div>
+                <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+                <div>一路有你，非常感谢</div>
+                <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+                    <span>打赏</span>
+                </button>
+                <div id="QR" style="display: none;">
+                        
+                        
+                <div id="wechat" style="display: inline-block">
+                <img id="wechat_qr" src="/img/payimg/wechat-admiration.jpg" alt="Boy's Zhang 微信支付"/>
+                            <p>微信赞赏</p>
+                </div>
+                        
+                        
+                        
+                <div id="alipay" style="display: inline-block">
+                <img id="alipay_qr" src="/img/payimg/alipay-admiration.jpg" alt="Boy's Zhang 支付宝"/>
+                <p>支付宝</p>
+                </div>
+                        
+                        
+                        
+                        
+                </div>
+                </div>
+                
+            </div>
+                <!--Gitalk评论start  -->
+                
+                <!-- 引入Gitalk评论插件  -->
+                <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+                <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script>
+                <div id="gitalk-container"></div>
+                <!-- 引入一个生产md5的js，用于对id值进行处理，防止其过长 -->
+                <!-- Thank DF:https://github.com/NSDingFan/NSDingFan.github.io/issues/3#issuecomment-407496538 -->
+                <script src="/js/md5.min.js"></script>
+                <script type="text/javascript">
+                    var gitalk = new Gitalk({
+                    clientID: 'aaebcdc2fdd273690984',
+                    clientSecret: 'b3a25ecdd736b7e32e289e3fce79408c7167a3e2',
+                    repo: 'playboyzhang.github.io',
+                    owner: 'playboyzhang',
+                    admin: ['playboyzhang'],
+                    distractionFreeMode: 'true',
+                    id: md5(location.pathname),
+                    });
+                    gitalk.render('gitalk-container');
+                </script>
+                
+                <!-- Gitalk end -->
+
+                
+
+            </div>  
+
+    <!-- Side Catalog Container -->
+        
+
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+
+
+<section>
+    
+        <hr class="hidden-sm hidden-xs">
+    
+    <h5><a href="/archive/">FEATURED TAGS</a></h5>
+    <div class="tags">
+        
+        
+        
+        </a>
+        
+        
+                <a data-sort="0016" 
+                    href="/archive/?tag=linux"
+                    title="linux"
+                    rel="7">linux</a>
+        
+                <a data-sort="0020" 
+                    href="/archive/?tag=%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0"
+                    title="学习笔记"
+                    rel="3">学习笔记</a>
+        
+                <a data-sort="0020" 
+                    href="/archive/?tag=%E9%9A%8F%E7%AC%94"
+                    title="随笔"
+                    rel="3">随笔</a>
+        
+                <a data-sort="0020" 
+                    href="/archive/?tag=git"
+                    title="git"
+                    rel="3">git</a>
+        
+                <a data-sort="0020" 
+                    href="/archive/?tag=python"
+                    title="python"
+                    rel="3">python</a>
+        
+                <a data-sort="0021" 
+                    href="/archive/?tag=%E6%96%87%E5%AD%A6%E7%B1%BB"
+                    title="文学类"
+                    rel="2">文学类</a>
+        
+                <a data-sort="0021" 
+                    href="/archive/?tag=%E8%AF%BB%E4%B9%A6"
+                    title="读书"
+                    rel="2">读书
+    </div>
+</section>
+
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+<!-- add support for mathjax by voleking-->
+
+
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdnjs.cloudflare.com/ajax/libs/anchor-js/1.1.1/anchor.min.js",function(){
+        // BY Fix:去除标题前的‘#’ issues:<https://github.com/qiubaiying/qiubaiying.github.io/issues/137>
+        // anchors.options = {
+        //   visible: 'always',
+        //   placement: 'right',
+        //   icon: '#'
+        // };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("//cdnjs.cloudflare.com/ajax/libs/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '★'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                 <!-- SNS Link -->
+                 
+
+
+<ul class="list-inline text-center">
+
+
+  
+  <li>
+    <a href="/feed.xml">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+  <li>
+      <a target="_blank" href="https://blog.csdn.net/m0_37917446">
+          <span class="fa-stack fa-lg">
+              <i class="fa fa-circle fa-stack-2x"></i>
+              <i class="fa  fa-stack-1x fa-inverse">C</i>
+          </span>
+      </a>
+  </li>
+  
+  
+  <li>
+      <a target="_blank" href="https://www.jianshu.com/u/0dcf24792ccf">
+          <span class="fa-stack fa-lg">
+              <i class="fa fa-circle fa-stack-2x"></i>
+              <i class="fa  fa-stack-1x fa-inverse">简</i>
+          </span>
+      </a>
+  </li>
+  
+  
+  
+  
+  <li>
+    <a target="_blank" href="http://weibo.com/playboyzhang">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+  
+  <li>
+    <a target="_blank" href="https://github.com/playboyzhang">
+      <span class="fa-stack fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+      </span>
+    </a>
+  </li>
+  
+  
+</ul>
+                
+                <p class="copyright text-muted">
+                    Copyright 2019 <i class="fa fa-heart" aria-hidden="true" style="color: #0085A1"></i> Boy's zhang. Powered by <a href="http://jekyllcn.com/">Jekyll</a>&GitHub.
+                    <br/>
+                    <span class="copyright text-muted" id="geoip"></span>
+                    <br/>
+                    您是本站第<span id="busuanzi_value_site_uv"></span>位小伙伴.&nbsp;&nbsp;
+                    <span id="busuanzi_container_site_pv">
+                        本站总访问量<span id="busuanzi_value_site_pv"></span>次.
+                    </span>
+                    <br/>
+                    <span class="copyright text-muted" id="count"></span>
+                    <br/>
+                </p>
+                
+
+
+
+
+                    <!-- Theme on <a href="https://github.com/playboyzhang/playboyzhang.github.io.git">GitHub</a>  -->
+                    <!-- <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=playboyzhang&repo=playboyzhang.github.io&type=star&count=true" >
+                    </iframe> -->
+            </div>
+        </div>
+    </div>
+</footer>
+<!--不蒜子统计-->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--ip位置统计，接口为ip-api-->
+<script type="application/javascript">
+	function getgeoip(json){
+		var ip = json.query;
+		var Country = json.country;
+		var region = json.regionName;
+        var city = json.city;
+        var str = "IP:" + ip +" Country:" + Country +" region:" + region +" city：" +city
+        document.getElementById('geoip').innerHTML=str;
+	}
+</script>
+
+<script type="application/javascript" src="//ip-api.com/json?lang=zh-CN&callback=getgeoip"></script>
+
+<!--运行时间模块-->
+<script>
+  
+    window.setInterval('counter()',1000);
+    function counter(){
+      var date=new Date();
+      var startDate=new Date(2018,06,28,0,0,0);
+      var time=(date-startDate)/1000;
+      var day=Math.floor(time/(24*60*60));
+      var hour=Math.floor(time%(24*60*60)/(60*60));
+      var minute=Math.floor(time%(24*60*60)%(60*60)/60);
+      var second=Math.floor(time%(24*60*60)%(60*60)%60);
+      var str="我的博客已默默运行了" + day + "天" + hour +"时" + minute + "分" + second + "秒";
+      document.getElementById('count').innerHTML=str;
+    }
+
+    </script>
+
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js "></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js "></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js "></script>
+
+
+<!-- Service Worker -->
+
+<script src="/js/snackbar.js "></script>
+<script src="/js/sw-registration.js "></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/ 
+     - https://github.com/jneen/rouge/wiki/list-of-supported-languages-and-lexers   
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+
+<!--fastClick.js -->
+<script>
+    async("//cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+<script>
+    // dynamic User by Hux
+    var _gaId = 'UA-127507458-1';
+    var _gaDomain = 'daydreamboy.space';
+
+    // Originial
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', _gaId, _gaDomain);
+    ga('send', 'pageview');
+</script>
+
+
+
+<!-- Baidu Tongji -->
+
+<script>
+    // dynamic User by Hux
+    var _baId = 'e235294111d8e901f35bfe34bfc47e7b';
+
+    // Originial
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?" + _baId;
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+
+
+<!-- Side Catalog -->
+
+
+
+<!-- Multi-Lingual -->
+
+<a id="rocket" href="#top" class=""></a>
+<script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+<script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
+
+
+<!-- Image to hack wechat -->
+<img src="/img/public-post/apple-touch-icon.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>

@@ -5,9 +5,2656 @@
     <description>Every failure is leading towards success.</description>
     <link>http://localhost:4000/</link>
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Wed, 13 Feb 2019 16:14:18 +0800</pubDate>
-    <lastBuildDate>Wed, 13 Feb 2019 16:14:18 +0800</lastBuildDate>
-    <generator>Jekyll v3.8.4</generator>
+    <pubDate>Tue, 29 Oct 2019 11:19:48 +0800</pubDate>
+    <lastBuildDate>Tue, 29 Oct 2019 11:19:48 +0800</lastBuildDate>
+    <generator>Jekyll v3.8.5</generator>
+    
+      <item>
+        <title>树莓派部署bitwardenrs</title>
+        <description>&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;方法一(脚本)：
+curl -sSL https://get.docker.com/ | sh
+方法二（参考 docker-compose 的官方文档来安装）：
+sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+方法三（apt-get）：
+由于 Raspbian 基于 Debian，我们还可以使用 apt 来安装 Docker，首先需要更新一下软件包的索引。
+sudo apt-get update
+安装 HTTPS 所依赖的包
+
+sudo apt-get install apt-transport-https \
+                    ca-certificates \
+                    software-properties-common
+
+添加 Docker 的 GPG key
+curl -fsSL https://yum.dockerproject.org/gpg | sudo apt-key add -
+验证 key id:
+
+apt-key fingerprint 58118E89F3A912897C070ADBF76221572C52609D
+
+设置稳定的 repository:
+
+sudo add-apt-repository \
+    &quot;deb https://apt.dockerproject.org/repo/ \
+    raspbian-$(lsb_release -cs) \
+    main&quot;
+注意：如果 add-apt-repository 命令遇到问题，可以尝试将下面这行添加到树莓派软件源 sources.list，操作如下：
+
+sudo nano /etc/apt/sources.list
+添加一行：
+
+deb https://apt.dockerproject.org/repo/ raspbian-RELEASE main
+根据自己系统版本调整上面的 RELEASE。通过下面的命令可以查看发行版。
+
+lsb_release -cs
+安装 Docker
+sudo apt-get update
+sudo apt-get -y install docker-engine
+测试 Docker
+运行 hello-world 镜像来做一个测试。
+sudo docker run hello-world
+如果 Docker 安装成功，你会看到一条消息：“Hello from Docker!”。
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</description>
+        <pubDate>Fri, 25 Oct 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2019/10/25/linux%E4%B8%8A%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2docker/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/10/25/linux%E4%B8%8A%E5%BF%AB%E9%80%9F%E9%83%A8%E7%BD%B2docker/</guid>
+        
+        <category>linux</category>
+        
+        <category>docker</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>树莓派部署bitwardenrs</title>
+        <description>&lt;hr /&gt;
+
+&lt;p&gt;接触了这么多的密码管理器，最早入门开始使用的是开源的 KeePassX，整体的数据库是以文件的形式存放，同步过程可支持各种云服务器和WebDAV，使用过程中感觉不太好的就是界面比较丑，chrome插件和andrion客户端用的也不太好，我是用keepassX+onedrive实现全平台的同步。使用keepass唯一一点就是数据是在自己手上，比较放心。&lt;/p&gt;
+
+&lt;p&gt;今年年初的时候入手了一个树莓派，然后就想着折腾折腾，无意中发现了bitwarden这个项目，当时最吸引我的几点是：这个项目的几个客户端体验都做得非常出色，自动填充功能很流畅；并且支持一次性密码（OTP 二次验证）。主要可以自建服务端。&lt;/p&gt;
+
+&lt;p&gt;当时研究了一下，发现有几个缺点缺点：由于 Bitwarden 服务器使用 .Net 开发，如果使用 Docker 来部署，镜像体积过大；此外它使用 MSSQL 数据库，部署这个数据库对服务器要求比较高。而树莓派性能有限，我当时还部署了其他一些服务。&lt;/p&gt;
+
+&lt;p&gt;直到后来在 GitHub 上搜索时发现有人用 Rust 实现了 Bitwarden 服务器，项目叫做 bitwarden_rs，并且提供了 Docker 镜像。这个实现更进一步降低了对机器配置的要求，并且 Docker 镜像体积很小，部署非常方便。此外，官方服务器中需要付费订阅的一些功能，通过自建服务端得以免费实现。故记录一下部署过程。&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;#安装Bitwarden服务器&lt;/p&gt;
+
+&lt;p&gt;##安装Docker&lt;/p&gt;
+
+&lt;p&gt;具体安装方法可以看《linux上快速安装docker》。&lt;/p&gt;
+
+&lt;p&gt;##准备bitwarden环境&lt;/p&gt;
+
+&lt;p&gt;假设你准备在主目录中存放数据，新建一个目录：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;    cd ~ &amp;amp;&amp;amp; mkdir bitwarden &amp;amp;&amp;amp; cd bitwarden
+    pwd
+    # 应当输出 /home/username/bitwarden
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;准备一个配置文件：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;    cat &amp;gt;&amp;gt; config.env &amp;lt;&amp;lt;EOF
+    SIGNUPS_ALLOWED=true 
+    DOMAIN=https://example.com 
+    DATABASE_URL=/data/bitwarden.db 
+    ROCKET_WORKERS=10
+    WEB_VAULT_ENABLED=true 
+    EOF
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;以上配置文件的说明：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;SIGNUPS_ALLOWED 控制是否开放用户注册，因为你必须先注册才能存储数据，所以暂且先打开；&lt;/li&gt;
+  &lt;li&gt;DOMAIN 填入你准备分配给 Bitwarden 服务使用的域名；&lt;/li&gt;
+  &lt;li&gt;DATABASE_URL 设置数据库在容器内的路径，你可以不设置，默认位于 /data/db.sqlite3；&lt;/li&gt;
+  &lt;li&gt;ROCKET_WORKERS 设置服务器使用几个线程。10 是默认值，你可以根据机器性能和个人需求适当调整；&lt;/li&gt;
+  &lt;li&gt;WEB_VAULT_ENABLED 设置是否开启 Web 客户端。如果开启，可以通过访问你的域名来打开 Web 客户端，用户登录后即可通过网页管理密码。因为注册用户需要，所以也暂且先打开；&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;准备服务描述文件：&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;    cat &amp;gt;&amp;gt; docker-compose.yml &amp;lt;&amp;lt;EOF
+    version: '3'
+    services:
+    bitwarden: 
+    image: bitwardenrs/server:raspberry 
+    container_name: bitwarden
+    restart: always
+    volumes:
+    - ./data:/data 
+    env_file:
+    - config.env
+    ports:
+    - &quot;6666:80&quot; 
+    EOF
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;这个文件主要描述了这些内容：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;bitwarden 现在是唯一一个服务；&lt;/li&gt;
+  &lt;li&gt;image: bitwardenrs/server:raspberry 指定使用 Docker Hub 的 bitwardenrs/server 树莓派镜像；&lt;/li&gt;
+  &lt;li&gt;volumes 中指定将容器内的 /data 目录挂载到宿主机的当前目录下的 data 目录，这样你可以在宿主机上执行数据库的备份操作；&lt;/li&gt;
+  &lt;li&gt;ports 指定将容器内的 80 端口映射到了宿主机的 6666 端口；&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;以后对 bitwarden 服务做的所有操作，都需要预先进入这两个配置文件所在的目录内。&lt;/p&gt;
+
+&lt;p&gt;##反向代理&lt;/p&gt;
+
+&lt;p&gt;我这里选用了nginx做反向代理的工具，首先安装nginx&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;sudo apt-get update
+sudo apt-get install nginx
+sudo systemctl restart nginx
+sudo systemctl enable nginx
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;具体配置如下&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;创建单独的配置文件&lt;/p&gt;
+
+    &lt;p&gt;/etc/nginx/sites-enabled/my.conf
+  或者
+  /etc/nginx/conf.d/my.conf&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;增加配置项&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;    server {
+	listen 80 ;
+
+	server_name example.com;	 #换成你自己的域名，需要到域名服务商修改对应的dns记录
+	location / {
+            proxy_pass http://192.168.1.101:6666/;   #修改为bitwarden的ip和端口
+            proxy_set_header Host $host;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        } 
+ 
+	}
+
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;##配置HTTPS&lt;/p&gt;
+
+&lt;p&gt;这方面的配置可以参考《快速为nginx配置https》。&lt;/p&gt;
+
+&lt;p&gt;##关闭用户注册、关闭 web vault&lt;/p&gt;
+
+&lt;p&gt;现在你的 Bitwarden 服务器允许任何人注册帐号使用，你可能希望关闭这个功能。在前面生成的 config.env 中，调整以下两项值：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;SIGNUPS_ALLOWED=false
+WEB_VAULT_ENABLED=false
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;修改之后，需要重启 bitwarden 服务才生效。运行以下命令来删除并重新创建容器。不必担心，因为指定了 volume 映射，你的数据不会被删除。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;docker-compose down &amp;amp;&amp;amp; docker-compose up -d
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;这样就关闭了用户注册功能，并禁用了 web vault 的访问。密码数据之后还是可以在客户端中进行编辑的。&lt;/p&gt;
+
+&lt;p&gt;##遇到的问题&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;andrion与ios端登录不上（“发生错误 There is a problem connecting to the server” 错误）：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;    经尝试更换https证书，关闭系统代理等登陆均未修复，后尝试放行http服务即可登陆
+
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;内网pc端登陆（“Failed to fetch” errors on desktop app）：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;
+    登录地址为 https://192.168.1.100/
+
+    经尝试更换https证书，关闭系统代理等登陆均未修复，后尝试放行http服务，将地址改为http://192.168.1.100后修复
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;andrion与ios端登陆问题，可能为https证书导致，后续尝试更换证书提供商。&lt;/p&gt;
+</description>
+        <pubDate>Fri, 25 Oct 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2019/10/25/%E6%A0%91%E8%8E%93%E6%B4%BE%E9%83%A8%E7%BD%B2bitwardenrs/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/10/25/%E6%A0%91%E8%8E%93%E6%B4%BE%E9%83%A8%E7%BD%B2bitwardenrs/</guid>
+        
+        <category>linux</category>
+        
+        <category>树莓派</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>RHCSA考试总结</title>
+        <description>&lt;p&gt;#RHCSA7考试题目总结&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;一、题库及答案分享&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;RHCSA考试：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;Hostname:station.rhce.cc
+IP address:192.168.122.100
+Netmask:255.255.255.0
+Gateway:192.168.122.1
+NameServer:192.168.122.10
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;前准备工作：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;ROOT密码：redhat(考试根据考试要求设置密码)&lt;/p&gt;
+
+    &lt;p&gt;破解密码，并将密码设置成redhat:
+  1、开机后按E ，删除rhgb quiet，写init=/bin/sh 在按Ctrl+x重启
+  2、mount –o remount,rw /
+  3、echo redhat | passwd –-stdin root
+  4、touch /.autorelabel
+  5、exec /sbin/init
+  备注：考试时可以systemctl isolate graphical.target&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;设置IP信息&lt;/p&gt;
+
+    &lt;p&gt;编辑网卡文本：vim /etc/sysconfig/network-scripts/ifcfg-eth0
+  DEVICE=eth0
+  NAME=eth0
+  ONBOOT=yes
+  BOOTPROTO=none
+  IPADDR=192.168.122.100
+  NETMASK=255.255.255.0
+  GATEWAY=192.168.122.1
+  DNS1=192.168.122.10&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;设置主机名station.rhce.cc&lt;/p&gt;
+
+    &lt;p&gt;命令：hostnamectl set-name station.rhce.cc&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;考题：
+一、SELinux必须运行在Enforcing模式下&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;1、查看selinux状态：getenforce
+2、把当前状态设置成enforcing：setenforce 1（重启后会失效）
+3、修改配置文件：vim /etc/selinux/config 中SELINUX=Enforcing
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;二、配置YUM源，使用地址ftp://server.rhce.cc/dvd&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;cd /etc/yum.reops.d 编辑文件aa.repo
+[aa]
+name=aa
+baseurl=ftp://server.rhce.cc/dvd
+enabled=1
+gpgcheck=0
+
+配置完成后，安装一个程序验证是否正确（例如：yum install vsftpd）
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;三、调整逻辑卷VO的大小，他的文件系统大小应该为290M。确保这个文件系统的内容仍然完整。注意：分区很少能精确到和要求的大小相同，因此在范围260M和320M之间都是可接受的。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;Lvscan 查询逻辑卷大小
+扩展逻辑卷大小：lvextend –L +98M /dev/vg0/vo（根据实际情况复制逻辑卷）
+查看文件系统大小：df –hT
+XFS文件系扩展：xfs_growfs /dev/vg0/vo
+EXT4文件系统扩展：resize2fs /dev/vg0/vo
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;四、创建下面的用户、组和组成员关系：
+名字为adminuser的组 
+用户natasha，使用adminuser作为附属组
+用户harry，使用adminuser作为附属组
+用户sarah，在系统上不能访问可交互的shell且不是adminuser成员，natasha/harry/sarah密码都是redhat&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;groupadd adminuser
+useradd –G adminuser natasha
+useradd –G adminuser harry
+useradd –s /sbin/nologin sarah
+echo redhat | passwd --stdin natasha
+echo redhat | passwd –-stdin harry
+echo redhat | passwd –-stdin sarah
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;五、复制文件/etc/fstab到var/tmp/fstab。配置/var/tmp/fstab的权限如下：
+文件/var/tmp/fstab所有者是root，属于root组
+文件/var/tmp/fstab不能被任何用户执行
+用户natasha可读和可写/var/tmp/fstab，用户harry既不能读也不能写
+所有其他用户（现在和将来）具有读/var/tmp/fstab的能力&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;复制文件：cp /etc/fstab /var/tmp/fstab
+setfacl –m u:natasha:rw- /var/tmp/fstab
+setfacl –m u:harry:--- /var/tmp/fstab
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;六、用户natasha必须配置一个cron job当地时间每天14:23运行，执行：/bin/echo hiya&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;crontab –e –u natasha 编辑文本： 23 14 * * * /bin/echo hiya
+检查命令：crontab –l –u natasha
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;七、创建一个目录/home/admins，使之具有下面的特性：
+/home/adminuser所属组为adminuser
+这个目录对组adminuser的成员具有可读、可写和可执行。但是不是对其他任何用户（root可以访问系统上所有的文件和目录）
+在/home/admins下创建的任何文件所属组自动设置为adminuser&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;mkdir /home/admins
+chgrp adminuser /home/admins
+chmod g+w /home/admins
+chmod o-rx /home/admins/ 
+chmod g+s /home/admins
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;八、从http://rhgls.rhce.cc/pub/updates安装合适的内核更新。下面的要求必须满足：
+更新的内核作为系统启动的默认内核
+原来的内核在系统刚启动的时候仍然可有效和可引导&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;firefox http://rhgls.rhce.cc/pub/updates &amp;amp;（SSH到考试机时一定要 –X）
+rpm -ivh kernel-3.10.0-229.el7.x86_64.rpm
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;九、系统host.rhce.cc提供了一个LDAP验证服务，你的系统按照下面要求绑定到这个服务：
+验证服务的基准DN是dc=rhce,dc=cc
+LDAP用于提供账号信息和验证信息连接应该使用位于http://host.rhce.cc/pub/domain11.crt的证书加密。 当正确配置后，ldapuser11可以登录你的系统，但是没有家目录，直到你完成autofs题目ldapuser11的密码是redhat&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;安装：yum install authconfig-gtk.x86_64
+打开图形化界面：authconfig-gtk &amp;amp;
+图形化界面选择LDAP， 安装提示软件包
+设置DN、服务器、下载CA证书（复制粘贴）
+（dc=rhce,dc=cc)   (host.rhce.cc)        (http://host.rhce.cc/pub/domain11.crt)
+用id ldapuser11验证
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;十、配置你的系统使它是rhgls.rhce.cc是一个NTP客户&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;yum install system-config-date –y
+system-config-date &amp;amp; 图形化界面设置删除原有server   添加rhgls.rhce.cc 点击确定
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;十一、配置autofs自动挂载LDAP用户的家目录，如下要求：
+host.rhce.cc(192.168.122.10)使用NFS共享了/home/guest给你的系统，这个文件系统包含了预先设置好的用户ldapuser11的家目录
+ldapuser11的家目录是在host.rhce.cc:/home/guests/ldapuser11
+ldapuser11的家目录应该自动挂载到本地/home/guest下面的/home/guests/ldapuser11
+家目录必须对用户具有可写权限 ldapuser11的密码是’redhat’&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;yum install autofs –y
+vim /etc/auto.master中添加/home/guests /etc/auto.aa
+cp /etc/auto.misc /etc/auto.aa
+vim /etc/auto.aa中添加：
+ldapuser11 -fstype=nfs,rw,vers=3 host.rhce.cc: /home/guests/ldapuser11
+重启服务：systemctl restart autofs 
+设置开机自动启动：systemctl enable autofs
+验证题目：su – ldapuser11
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;十二、创建一个用户alex， uid为3400 。这个用户的密码为redhat&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;useradd –u 3400 alex
+echo redhat | passwd –-stdin alex
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;十三、为你的系统上额外添加一个大小为512M的交换分区，这个交换分区在系统启动的时候应该自动挂载。不要移除和更改你系统上现存的交换分区&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;查看分区情况：lsblk
+fdisk /dev/sda
+创建一个主分区，创建扩展分区，创建交换分区(mkswap /dev/sda swapon –s /dev/sda)
+刷新分区表：partprobe
+设置自动挂载：vim /etc/fstab /dev/vda5 swap swap defaults 0 0 
+查看分区：swapon –a swapon –s
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;十四、找出所有所有者是ira的文件，并把它们拷贝到/root/findresults目录&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;创建目录：mkdir /root/findresults
+查询+拷贝：find / -user ira –exec cp –a {} /root/findresults/ \;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;十五、在/usr/share/dict/words中找出所有包含seismic的行。复制这些行并按照原来顺序放在文件/root/lines中。/root/lines应该没有空白行，所有的行必须是/usr/share/dict/words中原行的精确复制。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;grep seismic /usr/share/dict/words &amp;gt; /root/lines
+cat /root/lines
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;十六、创建名为/root/backup.tar.bz2的备份文件，其中包含/usr/local的内容，tar必须使用bz2压缩&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;cd /usr/local
+tar jcvf /root/backup.tar.bz2 * (如报错没有bzip2，则yum安装bzip2)
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;十七、按照下面的要求创建一个新的逻辑卷：
+逻辑卷命名为database，属于卷组datastore，且大小为50个扩展，在卷组datastore的逻辑卷每个扩展的大小为16MB，使用ext3格式化这个新的逻辑卷，此逻辑卷在系统启动的时候应该能自动挂载到/mnt/database&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;lsblk
+fdisk /dev/vda
+创建扩展分区，改成逻辑分区(8e)
+pvscan 
+pvcreate /dev/vda6
+vgcreate –s 16 datastore /dev/vda6
+lvcreate -l 50 –n database datastore
+mkfs.vfat /dev/datastore/database（afat格式化）
+mkfs.ext4 /dev/datastore/database（ext4格式化）
+mkfs.xfs /dev/datastore/database( xfs格式化)
+创建目录：/mnt/database 
+vim /etc/fstab /dev/datastore/database /mnt/database vfat(格式根据考试要求) defaults 0 0
+检查挂载：mount –a df-hT
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+</description>
+        <pubDate>Sat, 19 Oct 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2019/10/19/RHCSA%E8%80%83%E8%AF%95%E6%80%BB%E7%BB%93/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/10/19/RHCSA%E8%80%83%E8%AF%95%E6%80%BB%E7%BB%93/</guid>
+        
+        <category>linux</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>RHCE考试总结</title>
+        <description>&lt;p&gt;#RHCE7考试题目总结&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;一、题库及答案分享&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;RHCE考试：&lt;/p&gt;
+
+&lt;p&gt;前期准备：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;ip a 查看IP地址 
+cat /etc/resolv.conf查看DNS 
+hostname查看主机名 
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;配置yum ：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;vim /etc/yum.repos.d/server.repo
+[base]
+name=redhat
+baseurl=file:///mnt  考试时根据给的说明写相应的地址（类似http：//……） 
+enabeld=1
+gpgcheck=0
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;1.selinux&lt;/p&gt;
+
+&lt;p&gt;SElinux有三种模式，请将system1与system2运行于强制模式&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;#getenforce
+
+#setenforce 1
+
+#vim /etc/selinux/config
+设置为enforcing
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;2.配置SSH&lt;/p&gt;
+
+&lt;p&gt;用户能够从域rhce.cc内的客户端通过SSH访问您的两个虚拟机系统 
+在域my133t.org内的客户端不能访问您的两个虚拟机系统&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;#vim /etc/hosts.allow
+
+添加sshd : 192.168.122.0/255.255.255.0  (：前后都存在空格，且不支持/24这种格式的掩码书写方式)
+#vim /etc/hosts.deny
+添加sshd : .my133t.org  (考试可写域名也可写网段)
+
+#scp /etc/hosts.allow /etc/hosts.deny system2.rhce.cc:/etc  (拷贝到system2上去)
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;3.命令别名、自定义用户环境&lt;/p&gt;
+
+&lt;p&gt;在系统system1和system2上创建自定义命令为qstat,此自定义命令将执行/bin/ps -Ao pid,tt,user,fname,rsz 此命令对系统中所有用户有效 。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;#vim /etc/bashrc
+添加alias qstat='/bin/ps –Ao pid,tt,user,fname,rsz'
+#source /etc/bashrc
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;输入qstat 能看到相应输出即代表配置完成。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;scp /etc/bashrc system2:/etc/ 拷贝到system2上&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;然后进入systeem2，输入source /etc/bashrc，再输入qstat查看结果&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;4.端口转发 
+在system1上配置端口转发，在192.168.122.0/24中的系统，访问system1的本地端口5423将被转发到80，此设置永久生效。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;firewall-cmd –list-rich-rules （查看是否有规则，没有的话继续）
+
+firewall-cmd --add-rich-rule 'rule family=ipv4 source address=192.168.122.0/24 forward-port port=5423 protocol=tcp to-port=80'  （添加转发规则）
+
+firewall-cmd --add-rich-rule 'rule family=ipv4 source address=192.168.122.0/24 forward-port port=5423 protocol=tcp to-port=80' --permanent （让其永久执行）
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;如记不住如何书写，可通过man -k firewall&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;[root@esunny ~]# man -k firewall
+firewall-cmd (1)     - firewalld command line client
+firewall-offline-cmd (1) - firewalld offline command line client
+firewalld (1)        - Dynamic Firewall Manager
+firewalld.conf (5)   - firewalld configuration file
+firewalld.dbus (5)   - firewalld D-Bus interface description
+firewalld.direct (5) - firewalld direct configuration file
+firewalld.helper (5) - firewalld helper configuration files
+firewalld.icmptype (5) - firewalld icmptype configuration files
+firewalld.ipset (5)  - firewalld ipset configuration files
+firewalld.lockdown-whitelist (5) - firewalld lockdown whitelist configuration file
+firewalld.richlanguage (5) - Rich Language Documentation
+firewalld.service (5) - firewalld service configuration files
+firewalld.zone (5)   - firewalld zone configuration files
+firewalld.zones (5)  - firewalld zones
+
+[root@esunny ~]# man firewalld.richlanguage
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;查看example进行配置&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;5.配置聚合链路&lt;/p&gt;
+
+&lt;p&gt;在system1和system2 之间配置链路聚合 
+此链路使用接口eth1和eth2 
+此链路在一个接口失效后，仍然能工作 
+此链路在system1上使用地址172.16.11.25/255.255.255.0 
+此链路在system2上使用地址172.16.11.35/255.255.255.0
+此链路在系统重启后依然保持正常状态&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;system1：
+
+cd /usr/share/doc/teamd/example_ifcfgs/1
+
+cp * /etc/sysconfig./network-scripts/
+
+修改ifcfg-team_test0
+
+DEVICE=&quot;team_test0&quot;
+NAME=&quot;team_test0&quot;
+DEVICETYPE=&quot;Team&quot;
+ONBOOT=&quot;yes&quot;
+BOOTPROTO=none
+NETMASK=255.255.255.0
+IPADDR=172.16.11.25
+TEAM_CONFIG='{&quot;runner&quot;: {&quot;name&quot;: &quot;activebackup&quot;}}'
+
+修改ifcfg-eth1
+
+DEVICE=&quot;eth1&quot;
+NAME=&quot;eth1&quot;
+DEVICETYPE=&quot;TeamPort&quot;
+ONBOOT=&quot;yes&quot;
+TEAM_MASTER=&quot;team_test0&quot;
+
+修改ifcfg-eth
+
+DEVICE=&quot;eth2&quot;
+NAME=&quot;eth2&quot;
+DEVICETYPE=&quot;TeamPort&quot;
+ONBOOT=&quot;yes&quot;
+TEAM_MASTER=&quot;team_test0&quot;
+ 
+重启网络systemctl restart network
+
+scp ifcfg-team_test0 ifcfg-eth1 ifcfg-eth2 root@system2:/etc/sysconfig/network-scripts/
+
+修改为对应ip重启网络后生效
+通过ping 进行测试连通性
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;6.配置IPv6地址&lt;/p&gt;
+
+&lt;p&gt;在您的考试系统上配置接口,在你的默认网卡上使用如下IPv6地址，system1上的IP地址应该是200e:ac18::e0a/64，system2上的IP地址应该是200e:ac18::e14/64，两个系统必须能与网络200e:ac18/64内的系统通信，地址必须在重启后依然生效，两个系统保持当前的IPv4地址并能通信。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;system1:
+
+#nmcli connection show eth0 | grep ipv6(查看下ipv6信息)
+
+#nmcli connection modify eth0 ipv6.method auto （先行做下防止出错）
+#nmcli connection modify eth0 ipv6.addresses &quot;200e:ac18::e0a /64&quot; 
+#nmcli connection modify eth0 ipv6.method manual
+
+#systemctl restart network
+systemctl enable network
+
+system2:
+
+#nmcli connection modify eth0 ipv6.method auto （先行做下防止出错）
+nmcli connection modify eth0 ipv6.addresses &quot;200e:ac18::e14/64&quot; 
+nmcli connection modify eth0 ipv6.method manual
+systemctl restart network
+systemctl enable network
+测试： 
+ping6 200e:ac18::e14
+
+如果不通的话可以使用如下命令：
+
+nmcli con up eth0 或者 ifdown eth0 \ifup eth0
+
+nmcli device disconnect eth0 \ nmcli device connect eth0 
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;7.配置本地邮件服务器&lt;/p&gt;
+
+&lt;p&gt;在系统system1和system2上配置邮件服务—-postfix,这些系统不接受外部发来的邮件,在这些系统上本地发送任何邮件都会被路由到rhgls.rhce.cc,从这些系统上发送的邮件显示来自于rhce.cc,您可以通过发送邮件到本地用户 ‘dave’ 来测试您的配置， 系统 rhgls.rhce.cc 已经配置把此用户的邮件转到下列 URL http://rhgls.rhce.cc/received_mail/11&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;#rpm -qa postfix （查看是否安装邮件服务）
+
+
+vim /etc/postfix/main.cf
+复制mydestination =xxxxxxx  （在165行）
+粘贴后修改为mydestination=  (=空白，这样本地就不能收任何邮件了)
+往下找到relayhost =xxxx
+
+复制修改为relayhost=[rhgls.rhce.cc] (本地发送任何邮件都会被路由到rhgls.rhce.cc)
+
+找到myorigin=xxxx
+
+复制修改为myorigin=rhce.cc  (系统上发送的邮件显示来自于rhce.cc)
+保存退出 
+#systemctl restart postfix
+
+#systemctl enable postfix
+
+#id dave （查看是否有dave这个用户信息）
+
+
+
+在系统1上测试发送邮件：echo aaaa|mail –s “test” dave  //’test’改为bbb aaa都行
+
+如果提示没有该命令，需要按照mail插件
+
+#yum –y install mailx 
+
+在物理机上
+firefox http://host.rhce.cc/received_mail/ &amp;amp; 通过浏览器来访问查看dave的邮件信息，打开有个to dave的即可
+
+在system2上实现：
+
+#scp /etc/postfix/mail.cf system2.rhce.cc:/etc/postfix/
+
+#system restart postfix
+
+如果没有mailx的话同样yum安装即可
+
+#echo aaa11111 | mail –s sss dave
+
+
+也可以用下面方法来查看 
+wget http://host.rhce.cc/received_mail/dave
+cat /var/spool/mail/dave 来查看用户dave的邮件信息
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;8.通过SMB共享目录&lt;/p&gt;
+
+&lt;p&gt;在system1上配置SAMBA服务，您的samba服务器必须是STAFF工作组的一个成员，共享/common目录，共享名为common 
+只有rhce.cc域内的客户端可以访问common共享，Common必须是可以浏览的，用户andy必须能够读取共享中的内容，如果需要的话，验证密码是redhat。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;system1:
+#yum -y install samba cifs*
+
+#vim /etc/samba/smb.conf
+workgroup = STAFF                                     //在89行中修改
+
+最后再添加如下信息
+
+[common]
+
+path = /common
+
+hosts allow= 192.168.122.0/24
+
+保存退出
+
+#mkdir /common    //创建common文件夹，在根下创建
+
+#chcon -R -t samba_share_t /common/             //更改上下文 一定要修改！
+#systemctl restart smb   //别忘了重启服务
+
+#systemctl enable smb  
+
+#id andy                                                       //查看andy用户，没有该用户的话就创建
+#useradd andy
+
+#yum -y install samba-client 安装SMB密码插件
+
+#smbpasswd –a andy                             //创建验证密码，输入密码redhat两次
+
+#firewall-cmd --add-service=samba
+
+#firewall-cmd --add-service=samba --permanent
+
+#pdbedit –L  //列出Samba用户列表
+
+
+
+system2上验证：
+#yum -y install samba-client cifs*           //安装smb客户端
+#smbclient -L //system1.rhce.cc –U andy%redhat       //查看共享目录
+
+或者#smbclient //system1.rhce.cc/common -U andy%redhat           //浏览共享目录
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;9.配置多用户samba挂载 
+在system1上通过SMB共享目录/ miscellaneous 满足以下要求：
+共享名为 miscellaneous 
+共享目录 miscellaneous 只能被rhce.cc域内的客户端使用 
+共享目录 miscellaneous 必须可以被浏览 
+用户 silene 能以读的方式访问此共享，访问密码是redhat 
+用户 akira  能以读写的方式访问此共享，访问密码是redhat 
+此共享永久挂载在system2上的/mnt/multi目录，并使用用户 silene 进行认证，任何用户可通过 akira 来临时获得读写权限&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;因为在上面那题中在防火墙中已经允许了samba服务，所有这里就不再操作了
+system1:
+#mkdir /miscellaneous   //在根下创建
+#chcon –R -t samba_share_t  /miscellaneous  //更改上下文，
+
+#vim /etc/samba/smb.conf                                          //编辑samba配置文件
+[miscellaneous]
+path = /miscellaneous
+
+hosts allow=192.168.122.0/24
+
+valid users = silene,akira   //可不要
+writable = no 
+write list = akira
+保存退出
+
+
+#id silene  //查看是否用户已创建
+
+#id akira
+#useradd silene
+#useradd akira
+
+#smbpasswd -a silene                                                        //修改samba访问用户密码
+#smbpasswd -a akira                                                          //修改samba访问用户密码
+
+#chcon –R -t samba_share_t  /miscellaneous  //更改上下文，先更改上下文，再赋予其他人权限！切记
+
+#chmod o+w  /miscellaneous    //赋予其他人可以写入的权限
+
+然后#ls –ldZ /miscellaneous 查看下其他人的权限是否有
+
+#systemctl restart smb.service
+
+#systemctl enable smb.service
+
+进入system2:
+#yum -y install samba-client cifs*  //如果第8题安装完了的话就不必再安装了
+#mkdir /mnt/multi                    
+#vim /etc/fstab    //永久挂载
+//system1.rhce.cc/miscellaneous  /mnt/multi  cifs defaults,multiuser,sec=ntlmssp,username=silene,password=redhat  0 0
+保存退出
+mount -a 看能否挂载上  //如果挂不上看下服务是否启动
+
+验证：
+useradd tom1                                                              //system2添加tom1用户
+su –  tom1                                                                       //切换到tom1用户下
+#cifscreds add 192.168.122.100 -u akira                            //获取服务器端用户权限
+
+或者# cifscreds add system1.rhce.cc -u  akira
+cd /mnt/multi
+touch aaaa  //可以创建说明成功,如果无法创建，一般是更改下上下文，然后修改下共享文件夹的其他用户o+w权限就OK了~
+
+
+
+也可以通过#smbclient -L //192.168.122.100/ -U silene 来查看共享目录
+
+或者#smbclient //system1.rhce.cc/common -U silene%redhat          //浏览共享目录
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;10.配置NFS服务&lt;/p&gt;
+
+&lt;p&gt;在system1上配置NFS服务 
+以只读的方式共享 /public，同时只能被rhce.cc内系统访问 
+以读写的方式共享 /protected 能被 rhce.cc 内用户访问 
+访问 /protected 需要通过 Kerberos 安全加密，您可以使用下边 URL链 接提供的秘钥：http://host.rhce.cc/materials/nfs_server.keytab
+目录 /protected 应该包含名为 confidential 拥有人为 ldapuser11 的子目录 
+用户 ldapuser11 能以读写的方式访问 /protected/confidential&lt;/p&gt;
+
+&lt;p&gt;system1配置： 
+添加富规则（防火墙先开放下面三个服务）：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;# firewall-cmd --add-rich-rule 'rule family=ipv4 source address=192.168.122.0/24 service name=nfs accept'     //添加nfs富规则
+
+# firewall-cmd --add-rich-rule 'rule family=ipv4 source address=192.168.122.0/24 service name=nfs accept' --permanent  //永久生效
+
+# firewall-cmd --add-rich-rule 'rule family=ipv4 source address=192.168.122.0/24 service name=rpc-bind accept'    添加rpc-bind富规则
+
+#firewall-cmd --add-rich-rule 'rule family=ipv4 source address=192.168.122.0/24 service name=rpc-bind accept' --permanent  //永久生效
+
+# firewall-cmd --add-rich-rule 'rule family=ipv4 source address=192.168.122.0/24 service name=mountd accept'    //添加mountd富规则
+
+#firewall-cmd --add-rich-rule 'rule family=ipv4 source address=192.168.122.0/24 service name=mountd  accept' --permanent //永久生效
+
+yum -y install sssd* authconfig* krb5* //不用
+#mkdir /public
+
+#mkdir /protected
+#vim /etc/exports  //添加例外，内容修改为：注意：是exports,不是export
+/public      192.168.122.0/24(ro,sync)   //只读 
+/protected    192.168.122.0/24(rw,sync,sec=krb5p)  //读写并通过kerbros加密
+保存退出
+
+# wget -O /etc/krb5.keytab http://host.rhce.cc/materials/nfs-server.keytab //-O为另存为的意思 
+#vim /etc/sysconfig/nfs     //修改配置文件NFS格式
+RPCNFSDARGS=&quot;-V 4.2&quot;     //第13行,下面system2里挂载的时候格式也应该为v4.2
+保存退出
+
+# mkdir  /protected/confidential   //创建文件夹confidential
+
+# chown ldapuser11 /protected/confidential  //使其拥有人为 ldapuser11
+
+#chcon –R –t public_content_t /protected/confidential  //修改上下文，因为拥有人都已经是ldapuser11了，所以其肯定有读写权限，修改下上下文即可
+
+
+
+#systemctl start  nfs-secure-server  //此为服务端的
+#systemctl enable nfs-secure-serve  //设置开机自动启动服务
+
+#systemctl start  nfs-server  //此为服务端的
+#systemctl enable nfs-serve  //设置开机自动启动服务
+  
+验证：
+
+#system1:exportfs -avr
+
+system2上：
+showmount -e system
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;11.挂载一个NFS共享&lt;/p&gt;
+
+&lt;p&gt;在system2上挂载一个来自于system1.rhce.cc的NFS共享，并符合下列要求：
+/public挂载在下面的目录上 /mnt/nfsmount
+/protected挂载在下面的目录上 /mnt/nfssecure ，并使用安全的方式，秘钥下载地址http://host.rhce.cc/materials/nfs_client.keytab&lt;br /&gt;
+用户ldapuser11能在 /mnt/nfssecure/confidential 上创建文件 
+这些文件系统在系统启动时自动挂载&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;system2上的配置：
+
+#showmount –e system1.rhce.cc  //先看下是否有共享的目录，有的话继续，没的话需要看下上一题~
+yum -y install krb5* //不用
+
+#mkdir /mnt/nfsmount     //创建将要共享的文件
+
+# mkdir /mnt/nfssecure
+#wget -O /etc/krb5.keytab http://host.rhce.cc/materials/nfs-client.keytab
+#vim /etc/fstab   //永久挂载，添加内容如下：
+system1.rhce.cc:/public /mnt/nfsmount     nfs   defaults      0  0
+system1.rhce.cc:/protected  /mnt/nfssecure    nfs   defaults ,sec=krb5p, v4.2  0 0   //别忘了服务器分享端的格式为v4.2这里要上下文对应起来
+保存退出
+
+#mount –a  //刷新挂载
+
+#systemctl start nfs-secure //此为客户的的，如果挂载不是就重启下该服务
+#systemctl enable  nfs-secure
+
+# df –hT    //查看下是否挂载上
+
+
+测试： 在system1上ssh 到system2上去
+
+#ssh ldapuser11@system2.rhce.cc 
+#cd  /mnt/nfssecure/confidential
+#touch haha
+
+#ls  //有显示haha文件就证明OK
+#exit  //退出
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;12.配置WEB站点&lt;/p&gt;
+
+&lt;p&gt;在system1 上配置一个web站点 http://system1.rhce.cc，然后执行下述步骤：
+从 http://rhgls.rhce.cc/materials/station.html 下载文件，并重命名为index.html，&lt;/p&gt;
+
+&lt;p&gt;不要修改文件内容。 
+将文件 index.html 拷贝到您的web服务器的 DocumentRoot 目录下 
+来自于 rhce.cc 域的客户端可以访问该web服务器 
+来自于 my133t.org 域的客户端拒绝访问此web服务&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;system1上配置： 
+#yum groupinstall –y web*  //也可以不安装web* 只安装http\mod_ssl\mod_wsgi即可~
+
+#vi /etc/ httpd/conf/httpd.conf
+
+在配置中找到serverName一项，修改内容如下：
+
+ServerName  system1.rhce.cc:80    //配置web站点
+保存退出
+
+#wget  -O  /var/www/html/index.html  http://rhgls.rhce.cc/materials/station.html
+
+//-O另存为  第一个为存储文件 第二个为下载地址
+#firewall-cmd --add-rich-rule 'rule family=ipv4  source address=”192.168.122.0/24” service name=http accept'   //设置防火墙允许其（192.168.122.0）访问
+
+#firewall-cmd --add-rich-rule 'rule family=ipv4  source address=”192.168.122.0/24” service name=http  accept'--permanent
+
+#system strart httpd
+
+#system enable httpd
+system2上验证：
+
+#curl –s http://system1.rhce.cc
+
+或者
+#firefox http://system1.rhce.cc  显示station即可~
+注意：如果打不开的话需要去看下#cat /etc/resolv.conf 文件里面的nameserver是否为192.168.122.10 考试时不用考虑，测试环境需要注意 
+或者在宿主机上通过firefox打开http://system1.rhce.cc
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;配置安全web服务(跟14题有关系，有些就一起做了)&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;为站点 http://system1.rhce.cc 配置 TLS 加密 
+一个已签名证书从 http://host.rhce.cc/materials/system1.crt 获取 
+此证书的秘钥从 http://host.rhce.cc/materials/system1.key 获取 
+此证书的签名授权信息从 http://host.rhce.cc/materials/domain11.crt 获取&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;system1上的配置： 
+#yum -y install mod_ssl （如之前执行过yum groupinstall web*则不需要重复安装）
+   
+
+#vim /etc/httpd/conf.d/ssl.conf
+
+修改：
+
+DocumentRoot &quot;/var/www/html&quot;
+ServerName system1.rhce.cc:443
+
+SSLCertificateFile /etc/httpd/conf.d/system1.crt
+
+SSLCertificatekeyFile /etc/httpd/conf.d/system1.key
+
+SSLCertificateChainFile /etc/httpd/conf.d/domain11.crt
+
+保存退出
+
+
+
+#cd /etc/httpd/conf.d/   //CD到要下载文件的目录中，跟上面vhosts的路径吻合起来
+#wget http://host.rhce.cc/materials/system1.crt   
+#wget http://host.rhce.cc/materials/system1.key
+
+#wget http://host.rhce.cc/materials/domain11.crt
+
+
+#systemctl restart httpd  //重启服务
+
+
+
+如果出现网页打不开，需要做下如下操作，把https防火墙给开了 (注意，网页上的服务是https,不是httpd! )
+
+
+修改富规则，如下：（推荐！）
+
+#firwall-cmd --add-rich-rule 'rule family=ipv4  source address=192.168.122.0/24 service name=https accept' 
+#firwall-cmd --add-rich-rule 'rule family=ipv4  source address=192.168.122.0/24 service name=https accept' --permanent
+
+
+system2：验证： 
+#firefox https://system1.rhce.cc  
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;14、配置虚拟主机&lt;/p&gt;
+
+&lt;p&gt;在 system1 上扩展您的WEB服务器为站点 http://www.rhce.cc 创建一个虚拟主机，然后执行下述步骤：
+设置 DocumentRoot 为 /var/www/virtual 
+从 http://rhgls.rhce.cc/materials/www.html 下载文件，并重命名为index.html，不要修改该文件内容。 
+将文件 index.html 放到DocumentRoot 目录下 
+确保 andy 用户能够在 /var/www/virtual 目录下创建文件 
+注意：原站点 system1.rhce.cc 必须仍然能够访问 ，名称服务器 rhce.cc 提供对主机名 www.rhce.cc 的域名解析&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;system1上配置：
+copy模板文件
+#cp /usr/share/doc/httpd-2.4.6/httpd-vhosts.conf /etc/httpd/conf.d/vhosts.conf  //拷贝文件过来
+#vim /etc/httpd/conf.d/vhosts.conf  //配置虚拟主机信息
+空白行开始（其余没注释的全部删除）
+ 
+#mkdir  /var/www/virtual //创建文件夹
+
+#wget -O  /var/www/virtual/index.html  http://rhgls.rhce.cc/materials/www.html
+
+创建虚拟站点：
+
+#vi /etc/httpd/conf.d/vhost.conf  
+
+&amp;lt;VirtualHost www.rhce.cc:80&amp;gt;
+    DocumentRoot  /var/www/virtual
+    ServerName  www.rhce.cc
+&amp;lt;/VirtualHost&amp;gt;
+
+&amp;lt;VirtualHost system1.rhce.cc:80&amp;gt;
+    DocumentRoot  /var/www/html
+    ServerName  system1.rhce.cc
+&amp;lt;/VirtualHost&amp;gt;
+
+&amp;lt;Directory &quot;/var/www/html&quot;&amp;gt;
+    AllowOverride None
+    Require all granted
+&amp;lt;/Directory&amp;gt;
+
+&amp;lt;Directory &quot;/var/www/virtual&quot;&amp;gt;
+    AllowOverride None
+    Require all granted
+&amp;lt;/Directory&amp;gt;
+
+
+
+
+保存退出，其中最下面的路径Directory是从#vim /etc/httpd/conf/httpd.conf模板中提取的，关键词**
+
+#system restart httpd  //重启服务
+
+
+
+#id andy   //查看是否有andy用户
+
+如果没有用#useradd andy添加
+
+#ls –ld /var/www/virtual //查看下是否其他用户有权限修改该文件夹，不能的话执行下面操作：
+setfacl -m u:andy:rwx /var/www/virtual  //对andy用户可读可写可执行加权
+systemctl restart httpd
+客户端system2进行验证
+
+#curl –s www.rhce.cc
+
+或者
+#firefox www.rhce.cc 输出www   //此为最新添加的虚拟站点
+注意点：
+
+vhost是放在/etc/httpd/conf.d目录里面的，不是conf！！！
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;15.配置web内容的访问 
+在您 system1上的 web 服务器的 DocumentRoot 目录下创建一个名为 secret 的目录&lt;/p&gt;
+
+&lt;p&gt;要求如下：
+从 http://rhgls.rhce.cc/materials/private.html 下载一个文件副本到这个目录，并重命名为index.html，不要对这个文件文件内容做任何修改 
+从 system1 上，任何人都可以浏览 secret 的内容，但是从其他系统不能访问这个目录的内容&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;system1配置：
+
+#mkdir  /var/www/html/secret
+
+#mkdir  /var/www/virtual/secret //为防止出错，在html和www里面均创建secret文件
+
+#wget -O http://rhgls.rhce.cc/materials/private.html/var/www/html/secret/index.html
+
+#wget -O http://rhgls.rhce.cc/materials/private.html/var/www/virtual/secret/index.html
+#vim /etc/httpd/conf.d/vhosts.conf  //复制最后4行粘贴2次添加修改内容如下：
+
+
+&amp;lt;Directory &quot;/var/www/html/secret&quot;&amp;gt;
+    AllowOverride None
+    Require local   //这里local的意思是只允许自己访问
+&amp;lt;/Directory&amp;gt;
+
+&amp;lt;Directory &quot;/var/www/virtual/secret&quot;&amp;gt;
+    AllowOverride None
+    Require local   //这里local的意思是只允许自己访问
+&amp;lt;/Directory&amp;gt;
+  
+
+
+
+
+保存退出
+#systemctl restart httpd  //重启服务
+验证：
+system1访问
+
+#curl –s http://system1.rhce.cc/secret/index.html 正常的话应该显示private
+
+#curl –s http://www.rhce.cc/secret/index.html    正常的话应该显示private 
+system2访问
+
+#curl –s http://system1.rhce.cc/secret/iindex.html   应该被拒绝显示为forbidden
+
+#curl –s http://www.rhce.cc/secret/index.html  应该被拒绝显示为forbidden
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;16.实现动态web内容 （一般不考这题）
+在system1上配置提供Web内容，要求如下：&lt;/p&gt;
+
+&lt;p&gt;动态内容由名为 dynamic.rhce.cc 的虚拟主机提供 
+虚拟主机侦听端口为 8998
+从 http://rhgls.rhce.cc/materials/webapp.wsgi下载一个脚本，然后放在适当的位置，不要修改文件内容 
+客户端访问 http://dynamic.rhce.cc:8998 时，应该接收到动态生成的web页面 
+此 http://dynamic.rhce.cc:8998 必须能被rhce.cc内所有的系统访问&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;system1配置： 
+#vim /etc/httpd/conf.d/vhosts.conf //添加内容如下，其中有些结构直接复制上面的即可
+&amp;lt;VirtualHost dynamic.rhce.cc:8998&amp;gt;
+    DocumentRoot  /var/www/html
+    ServerName  dynamic.rhce.cc
+&amp;lt;/VirtualHost&amp;gt;
+
+&amp;lt;Directory &quot;/var/www/virtual&quot;&amp;gt;
+    AllowOverride None
+    Require all granted
+    WSGIScriptAlias  / /var/www/html/webapp.wsgi //访问/的时候就访问后面的文件
+&amp;lt;/Directory&amp;gt;
+
+
+#vim /etc/httpd/conf/httpd.conf  //监听端口，在里面直接搜索/Listen/c，在Listen 80处复制添加一个8998端口，在下面直接添加内容：
+
+Listen 8998
+
+保存退出
+
+修改上下文，这个可以直接找模板来操作：
+
+#vim /etc/ssh/sshd_config //找到关键词semanage port -a –t ssh_port_t –p –t tcp
+
+然后直接操作刚刚复制的东西
+#semanage port -a -t http_port_t -p tcp 8998     ///原ssh改为http，添加8998端口访问（修改上下文），注意：如果此时提示未找到该命令的话，需要yum安装下：
+
+#yum whatprovides */semanage
+
+#yum install –y policyconreutils-python-2.2.5-11.el7.x86_64
+
+安装完继续执行上述命令。
+
+#yum install -y mod_wsgi  或者*wsgi*    ///安装网页服务器网关接口服务（wsgi服务）
+
+下面是下载文件:
+
+#cd /var/www/html  //这个地址是跟上面的Vhosts内容的路径对应的
+
+wget -P /var/www/html/  http://rhgls.rhce.cc/materials/webapp.wsgi  //-O必须指明下载到哪个路径的文件名是多少，-P只需要知道下载路径的文件夹即可即可 
+
+下载完后然后在/etc/httpd/conf.d/vhosts.conf中添加wsgi访问 / 即可访问该文件，在上面已黄标标明
+
+#ls //查看下下载文件名是多少，要与上面Vhosts的文件名一致。
+#systemctl restart httpd  //重启服务
+
+添加富规则：
+#firewall-cmd --add-rich-rule 'rule family=ipv4 source address=192.168.122.0/24 port port=8998 protocol=tcp accept'  //防火墙设置
+
+#firewall-cmd --add-rich-rule 'rule family=ipv4 source address=192.168.122.0/24 port port=8998 protocol=tcp accept' --permanent
+
+
+system2验证：
+
+#host dynamic.rhce.cc //看下是否能解析到该地址
+
+#firefox http://dynamic.rhce.cc:8998 出现UNIX EPOCH time is now:******就是成功的！ 如果出现not found则进去看看vhost文件是否修改正确
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;17、创建一个脚本&lt;br /&gt;
+在system1上创建一个名为/root/script 的脚本，让其提供下列特性&lt;br /&gt;
+当运行/root/script foo， 输出为bar&lt;br /&gt;
+当运行/root/script bar，输出为foo&lt;br /&gt;
+当没有任何参数或者参数不是foo或者bar时，其错误输出产生以下的信息:
+/root/script foo|bar&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;在system1上操作：
+
+#vim /root/script  //编辑脚本页如下：
+#!/bin/bash
+case $1 in
+
+    foo)
+            echo ‘bar’;;
+    bar)
+            echo ‘foo’;;
+    *) 
+            echo ‘/root/script foo|bar’
+
+    exit 1
+
+esac
+
+保存退出
+
+chmod +x /root/script  //添加可执行权限
+验证：
+
+./script  应该显示/root/script fool|bar
+
+./script asasasa 应该显示/root/script fool|bar
+
+./script foo 应该显示bar
+
+./script bar 应该显示fool
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;18、创建一个添加用户的脚本&lt;br /&gt;
+在 system1 上创建一个脚本，名为 /root/mkusers ,此脚本能实现为系统 system1创建本地用户，并且这些用户的用户名来自一个包含用户名列表的文件。同时满足下列要求：&lt;br /&gt;
+此脚本要求提供一个参数，此参数就是包含用户名列表的文件&lt;br /&gt;
+如果没有提供参数，此脚本应该给出下面的提示信息 Usage: /root/mkusers 然后退出并返回相应的值&lt;br /&gt;
+如果提供一个不存在的文件名，此脚本应该给出下面的提示信息 Input file not found 然后退出并返回相应的值&lt;br /&gt;
+创建的用户登录 shell 为 /bin/false&lt;br /&gt;
+此脚本不需要为用户设置密码&lt;br /&gt;
+你可以从下面的URL获取用户名列表作为测试用http://rhgls.rhce.cc/materials/userlist&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;在system1上操作：
+
+#vim /root/mkusers
+
+#!/bin/bash
+
+if [ $# -eq 0 ]; then  //没有任何参数的情况
+
+    echo 'Usage: /root/mkusers'
+
+    exit 1
+
+fi
+
+if [ ! -e $1 ]; then    //! -e 表示不存在，-e表示存在  或者写成-f   表示文件
+
+    echo 'Input file not found'
+
+    exit 1
+
+fi
+
+while read line    //如果存在的情况,随便写了个用户名变量line
+
+do
+
+    useradd -s /bin/false  $line
+
+done &amp;lt; $1
+
+保存退出
+
+chmod  +x /root/mkusers
+#wget http://host.rhce.cc/materials/userlist //下载该文件到根目录
+#cat userlist   //查看下该文件有哪些用户存在
+
+验证：
+
+#./mkusers  //应该输出为Usage: /root/mkusers
+
+#./mkusers userlistxxxxx //随便写一个的话，应该输出为Input file not found
+
+#./mkusers userlist  //这个是存在的所以就创建了此文件内的所有用户
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;19、配置 iSCSI 服务端
+配置 system1 提供一个 iSCSI 服务 磁盘名为 iqn.2014-09.com.example.domain11:system1 ，
+并符合下列要求：
+服务端口为 3260
+使用 iscsi_vol 作其后端卷 其大小为 3G
+此服务只能被 system2.rhce.cc 访问&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;system1上操作：
+
+~]# fdisk -l /dev/vda    #分区
+
+~]#yum install -y targetcli      #安装服务
+
+~]#targetcli   
+
+/&amp;gt;  ls
+
+/&amp;gt;  cd backstores/
+
+/&amp;gt;  cd block
+
+/&amp;gt;  create  disk1 /dev/vda3
+
+/&amp;gt;  cd ..
+
+/&amp;gt;  cd ..
+
+/&amp;gt;   cd  iscsi
+
+/&amp;gt;  create iqn.2014-09.com.example.domain11:system1
+
+/&amp;gt;  cd   iqn.2014-09.com.example.domain11:system1/tpg1/
+
+/&amp;gt;  ls
+
+/&amp;gt;  luns/ create  /backstores/block/disk1
+
+/&amp;gt;  acls/  create   iqn.2014-09.com.example.domain11:xxx
+
+/&amp;gt;  portals/ create 0.0.0.0 3260
+
+/&amp;gt;  exit
+添加富规则：
+#firewall-cmd --add-rich-rule 'rule family=ipv4 source address=192.168.122.200/32 port port=3260 protocol=tcp accept'  //防火墙设置
+
+#firewall-cmd --add-rich-rule 'rule family=ipv4 source address=192.168.122.200/32· port port=3260 protocol=tcp accept' --permanent
+
+~]#systemctl enaable target  #添加开机重启
+
+~]#systemctl restart targe    #重启
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;20、配置 system2 使其能连接在 system1 的上提供的 iqn.2014-09.com.example.domain11:system1
+并符合以下要求：
+iSCSI 设备在系统启动的期间自动加载
+块设备 iSCSI 上包含一个大小为 1700 MiB 的分区， 并格式化为 xfs
+此分区挂载在 /mnt/data 上 同时在系统启动的期间自动挂载&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;~]# yum install iscsi* -y
+
+~]#vim /ettc/iscsi/initiatorname.iscsi
+
+InitiatorName=iqn.2014-09.com.example.domain11:xxx
+
+~]#iscsiadm -t st -m discovery -p system2.rhce.cc
+
+~]#iscsiadm -m node -T iqn.2014-09.com.example.domain11:system1 -p system2.rhce.cc -l
+
+~]#fdisk -l
+
+~]#lsblk
+
+~]# fdisk /dev/sda 分区
+
+~]# mkfs.xfs /dev/sda1
+
+~]# mkdir /mnt/data
+
+~]# vim /etc/fstab
+
+/dev/sda1        /mnt/data  xfs    defaults,_netdev      0    0
+
+~]# mount -a
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;21、配置一个数据库
+在 system1 上创建一个 MariaDB 数据库, 名为 Contacts ， 并符合以下条件：
+数 据 库 应 该 包 含 来 自 数 据 库 复 制 的 内 容 ， 复 制 文 件 的 URL 为
+http://rhgls.rhce.cc/materials/users.mdb 。
+数据库只能被 localhost 访问。
+除了 root 用户, 此数据库只能被用户 Luigi 查询。 此用户密码为 redhat。
+root 用户的密码为 redhat ， 同时不允许空密码登录。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;~]# yum groupinstall &quot;mariadb*&quot; -y
+
+~]# systemctl start mariadb
+
+~]# systemctl enable mariadb
+
+~]# cd /root/
+
+~]# wget http://rhgls.rhce.cc/materials/users.mdb   #下载数据库
+
+
+~]# mysql_secure_installation v   #添加root密码
+
+~]# mysql -u root -p
+
+MariaDB &amp;gt; CREATE DATABASE  Contacts;
+
+MariaDB &amp;gt; use  Contacts;
+
+MariaDB &amp;gt; grant select on Contact.* to Luisi@localhost identified by 'redhat'  set password=password('redhat')
+
+MariaDB &amp;gt; set password=password('redhat') （此为设置root密码的第二种方式，如之前设置过，此步骤忽略）
+
+MariaDB &amp;gt; source /root/users.mdb  #导入数据库
+
+MariaDB &amp;gt; flush privileges;
+
+MariaDB &amp;gt; quit
+
+~]# mysql -u root -p Contacts  &amp;lt; /root/users.mdb   （此为第二种导入数据库方法，如使用上面步骤导入，此命令可忽略）
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;22、数据库查询
+在系统 system1 上使用数据库 Contacts ， 并使用相应的 SQL 查询以回答下列问题：
+密码是 tangerine 的人的名字?
+有多少人的姓名是 John 同时居住在 Santa Clara?&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;~]# mysql -u root -p
+
+MariaDB &amp;gt; use Contacts;
+
+MariaDB &amp;gt; show tables;
+
+MariaDB &amp;gt; select * from pass inner join name where name.aid=pass.bid;
+
+MariaDB &amp;gt; select * from pass inner join name on name.aid=pass.bid where password='tangerine';
+
+MariaDB &amp;gt;select * from name inner join loc on name.aid=loc.cid where firstname='John' and loction='Santa Clara';
+
+
+
+如查看表中内容，可通过（desc 表名）查看表中具体字段。
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+</description>
+        <pubDate>Fri, 18 Oct 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2019/10/18/RHCE%E8%80%83%E8%AF%95%E6%80%BB%E7%BB%93/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/10/18/RHCE%E8%80%83%E8%AF%95%E6%80%BB%E7%BB%93/</guid>
+        
+        <category>linux</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>アイロニ</title>
+        <description>&lt;h1 id=&quot;アイロニ&quot;&gt;アイロニ&lt;/h1&gt;
+
+&lt;p&gt;歌名根据英文翻译过来是反语、讽刺的意思。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;上手に生きるのは难しい
+想要得心应手地好好地活下去实在是太难了.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;歌曲歌词&quot;&gt;歌曲歌词&lt;/h3&gt;
+
+&lt;p&gt;少し歩き疲れたんだ
+有些走累了呢
+少し歩き疲れたんだ
+有些走累了呢
+月并みな表现だけど
+虽然以那麼平凡的表现
+人生とかいう长い道を
+来形容人生的漫长道路
+少し休みたいんだ
+想稍稍休息下呢
+少し休みたいんだけど
+想稍稍休息下呢
+时间は刻一刻残酷と
+时间每分每刻都这样残酷
+私を 引っぱっていくんだ
+将我紧拖著前行
+うまくいきそうなんだけど
+虽然看似顺利进行著
+うまくいかないことばかりで
+但其实全是不顺利的事
+迂阔にも泣いてしまいそうになる
+却糊涂地哭了起来
+情けない本当にな
+真是丢人呢
+惨めな気持ちなんか
+这样悲惨的感受
+嫌というほど味わってきたし
+已经体验到不想再有了
+とっくに悔しさなんてものは
+但明明应该将悔恨之类
+舍ててきたはずなのに
+早已丢弃了
+绝望抱くほど
+虽也不是感到绝望般
+悪いわけじゃないけど
+那样差劲
+欲しいものは
+但希望的东西
+いつも少し手には届かない
+却永远得不到手
+そんな半端だとねなんか
+对这样没有用的家伙
+期待してしまうから
+为什麼会有所期待呢
+それならもういっそのこと
+既然如此不如乾脆
+ドン底まで突き落としてよ
+将它推入谷底吧
+答えなんて言われたって
+即使要说答案
+人によってすり替わってって
+因人不同也会有所改变
+だから绝対なんて绝対
+所以绝对之类绝对
+信じらんないよねぇ
+是不能相信的 是吧
+苦しみって谁にもあるって
+谁都会有苦楚
+そんなのわかってるから何だって
+说著这谁都明白
+なら笑って済ませばいいの？
+那就笑著过去就好了吧？
+もうわかんないよバカ！
+我不知道该怎麼办啦 笨蛋！
+散々言われてきたくせに
+明明是被狠狠说了一番
+なんだまんざらでもないんだ
+但却未必就是这样
+简単に考えたら楽なことも
+将简单思考起来很容易的事
+难関に考えてたんだ
+也当做难题考虑了
+段々と色々めんどくなってもう
+种种事都越发麻烦
+淡々と终わらせちゃおうか
+让一切都淡淡结束吧
+「病んだ？」とかもう嫌になったから
+「病了吗？」之类已经受够了
+やんわりと终わればもういいじゃんか
+能温和地结束不就好了吗
+梦だとか希望とか
+梦也好希望也好
+生きてる意味とか
+又或是生存意义
+别にそんなものはさして
+那些东西也并不是
+必要ないから
+没有必要存在
+具体的でわかりやすい
+请给我具体易懂的
+机会をください
+这样的机会
+泣き场所探すうちに
+在寻找哭泣的地方时
+もう泣き疲れちゃったよ
+就已经哭累了啊
+きれいごとって嫌いだって
+讨厌华而不实的话
+期待しちゃっても形になんなくて
+期待著却捉不到蛛丝马迹
+「星が仆ら见守って」って
+要说「星星守护著我们」
+夜しかいないじゃん　ねぇ
+那也就只有晚上 对吗
+君のその优しいとこ
+你的温柔
+不覚にも求めちゃうから
+我在不知不觉中寻求著
+この心やらかいとこ
+这颗心的柔软
+もう触んないで　ヤダ！
+请不要触碰了 不要！
+もうほっといて
+不要管了
+もう置いてって
+丢下我吧
+汚れきったこの道は
+弄脏的这条路
+もう変わんないよ呜呼
+已经无法改变了啊
+疲れちゃって弱気になって
+疲倦了变得懦弱了
+逃げ出したって无駄なんだって
+想要逃也是白费力气
+だから内面耳塞いで
+所以内心捂著耳朵
+もう最低だって泣いて
+哭著这已经是最后
+人生って何なのって
+人生又是什麼呢
+わかんなくても生きてるだけで
+只是不明不白地活著
+幸せって思えばいいの？
+认为这就是幸福就可以吗？
+もうわかんないよバカ！
+我不明白了啦 笨蛋！
+终わり
+终わり&lt;/p&gt;
+
+&lt;p&gt;第一次听这首歌是majiko演唱，而这也是我最喜欢的演绎者，略微有些哀伤的女声，配合着歌词与音乐的渲染，完全将那种处在人生低谷，不甘放弃，却不知道前路如何的感觉演唱出来。&lt;/p&gt;
+
+&lt;p&gt;莫名的非常喜欢这首歌，可惜听不懂日文的歌词，不过还是能从音乐中感受所要传递的那种情感。&lt;/p&gt;
+
+&lt;p&gt;在人生的低潮期所感受到的对人生、生活的迷茫与焦虑，甚至是有一种自暴自弃的情感蕴含其中。努力奋斗不仅艰辛，而且还很难得到回报，但又不愿自甘堕落，滑向深渊，进也不是，退也不是。&lt;/p&gt;
+
+</description>
+        <pubDate>Thu, 17 Oct 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2019/10/17/%E3%82%A2%E3%82%A4%E3%83%AD%E3%83%8B/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/10/17/%E3%82%A2%E3%82%A4%E3%83%AD%E3%83%8B/</guid>
+        
+        <category>音乐</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>git学习笔记</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;git上解决中文文件显示、修改、提交问题&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;一般git本地仓库命名的中文文件会在本地以这种形式存在
+&lt;img src=&quot;/img/in-post/2019-02-16-github-resolveChinese/WrongChinese.png&quot; alt=&quot;in-pot-github-contact&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;故而在修改或者删除时不管加不加git提示的那个双引号，用git删除时都会提示路径找不到&lt;/p&gt;
+
+&lt;p&gt;解决方法有两种&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;修改git配置&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-git&quot;&gt; git config --global core.quotepath false
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;git config –help中显示&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-git&quot;&gt;       core.quotePath
+           The commands that output paths (e.g.  ls-files, diff), when not given the -z option, will quote &quot;unusual&quot; characters in the pathname by enclosing the
+           pathname in a double-quote pair and with backslashes the same way strings in C source code are quoted. If this variable is set to false, the bytes
+           higher than 0x80 are not quoted but output as verbatim. Note that double quote, backslash and control characters are always quoted without -z regardless
+           of the setting of this variable.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;所以core.quotepath改为false的话，git不会对值为128以上的非ascii码字符进行quote，就会显示中文&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;修改～/.gitconfig&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;添加&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-git&quot;&gt;[core]
+quotepath = false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;原理同上&lt;/p&gt;
+</description>
+        <pubDate>Sat, 16 Feb 2019 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2019/02/16/github-resolveChinese/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/02/16/github-resolveChinese/</guid>
+        
+        <category>学习笔记</category>
+        
+        <category>git</category>
+        
+        
+      </item>
     
       <item>
         <title>随笔</title>
@@ -286,1167 +2933,6 @@ git pull
         <category>学习笔记</category>
         
         <category>git</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>git学习笔记</title>
-        <description>&lt;blockquote&gt;
-  &lt;p&gt;git基本总结&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h1 id=&quot;github上ssh-key的配置&quot;&gt;github上ssh key的配置&lt;/h1&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-4
-5
-6
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;git config &lt;span class=&quot;nt&quot;&gt;--global&lt;/span&gt; user.name &lt;span class=&quot;s2&quot;&gt;&quot;xuhaiyan&quot;&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;#添加上传git的名称&lt;/span&gt;
-git config &lt;span class=&quot;nt&quot;&gt;--global&lt;/span&gt; user.email &lt;span class=&quot;s2&quot;&gt;&quot;example@gmail.com&quot;&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;#添加用户邮箱&lt;/span&gt;
-ssh-keygen &lt;span class=&quot;nt&quot;&gt;-t&lt;/span&gt; rsa &lt;span class=&quot;nt&quot;&gt;-C&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;[email@email.com]&quot;&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;#生成密匙&lt;/span&gt;
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;1、将上述步骤生成的ssh-keygen添加到github相应帐户上&lt;/p&gt;
-
-&lt;p&gt;​   把&lt;code class=&quot;highlighter-rouge&quot;&gt;id_rsa.pub&lt;/code&gt;文件里的内容复制到这里&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/in-post/2019-01-23-github/in-pot-github-contact.png&quot; alt=&quot;in-pot-github-contact&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/in-post/2019-01-23-github/in-pot-github-sshkeys.png&quot; alt=&quot;in-pot-github-sshkeys&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/in-post/2019-01-23-github/in-pot-github-addsshkey.png&quot; alt=&quot;in-pot-github-addsshkey&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/in-post/2019-01-23-github/in-post-github-commitssh.png&quot; alt=&quot;in-post-github-commitssh&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/in-post/2019-01-23-github/in-post-github-addpanel.png&quot; alt=&quot;in-post-github-addpanel&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;2、测试连通性&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;ssh &lt;span class=&quot;nt&quot;&gt;-T&lt;/span&gt; git@github.com
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;​如果看到以下内容则证明连接成功&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;The authenticity of host &lt;span class=&quot;s1&quot;&gt;'github.com (207.97.227.239)'&lt;/span&gt; can&lt;span class=&quot;s1&quot;&gt;'t be established.
-RSA key fingerprint is 16:27:ac:a5:76:28:2d:36:63:1b:56:4d:eb:df:a6:48.
-Are you sure you want to continue connecting (yes/no)?
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h1 id=&quot;常用的git命令&quot;&gt;常用的git命令&lt;/h1&gt;
-
-&lt;p&gt;根据&lt;a href=&quot;http://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html&quot;&gt;阮一峰老师&lt;/a&gt;的总结我自己摘抄了一些自己经常用到的命令&lt;/p&gt;
-
-&lt;p&gt;基本的原理图如下&lt;img src=&quot;/img/in-post/2019-01-23-github/in-post-github-table.png&quot; alt=&quot;in-post-github-table&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;几个专用名词的译名如下：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Workspace：工作区&lt;/li&gt;
-  &lt;li&gt;Index / Stage：暂存区&lt;/li&gt;
-  &lt;li&gt;Repository：仓库区（或本地仓库）&lt;/li&gt;
-  &lt;li&gt;Remote：远程仓库&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;一、创建新仓库&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-4
-5
-6
-7
-8
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;c&quot;&gt;# 在当前目录新建一个Git代码库&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git init
-
-&lt;span class=&quot;c&quot;&gt;# 新建一个目录，将其初始化为Git代码库&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git init &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;project-name]
-
-&lt;span class=&quot;c&quot;&gt;# 下载一个项目和它的整个代码历史&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git clone &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;url]
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;二、添加、删除文件&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;c&quot;&gt;# 添加指定文件到暂存区&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git add &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file1] &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file2] ...
-
-&lt;span class=&quot;c&quot;&gt;# 添加指定目录到暂存区，包括子目录&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git add &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;dir&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# 添加当前目录的所有文件到暂存区&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git add &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-
-
-&lt;span class=&quot;c&quot;&gt;# 删除工作区文件，并且将这次删除放入暂存区&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git &lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file1] &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file2] ...
-
-&lt;span class=&quot;c&quot;&gt;# 停止追踪指定文件，但该文件会保留在工作区&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git &lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--cached&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file]
-
-&lt;span class=&quot;c&quot;&gt;# 改名文件，并且将这个改名放入暂存区&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git &lt;span class=&quot;nb&quot;&gt;mv&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file-original] &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file-renamed]
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;三、提交&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;c&quot;&gt;# 提交暂存区到仓库区&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git commit &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;message]
-
-&lt;span class=&quot;c&quot;&gt;# 提交暂存区的指定文件到仓库区&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git commit &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file1] &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file2] ... &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;message]
-
-
-&lt;span class=&quot;c&quot;&gt;# 提交时显示所有diff信息&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git commit &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# 使用一次新的commit，替代上一次提交&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# 如果代码没有任何新变化，则用来改写上一次commit的提交信息&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git commit &lt;span class=&quot;nt&quot;&gt;--amend&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;message]
-
-&lt;span class=&quot;c&quot;&gt;# 重做上一次commit，并包括指定文件的新变化&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git commit &lt;span class=&quot;nt&quot;&gt;--amend&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file1] &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file2] ...
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;四、查看状态&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;c&quot;&gt;# 显示有变更的文件&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git status
-
-&lt;span class=&quot;c&quot;&gt;# 显示当前分支的版本历史&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git log
-
-&lt;span class=&quot;c&quot;&gt;# 显示commit历史，以及每次commit发生变更的文件&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git log &lt;span class=&quot;nt&quot;&gt;--stat&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# 搜索提交历史，根据关键词&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git log &lt;span class=&quot;nt&quot;&gt;-S&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;keyword]
-
-&lt;span class=&quot;c&quot;&gt;# 显示某个commit之后的所有变动，每个commit占据一行&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git log &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;tag] HEAD &lt;span class=&quot;nt&quot;&gt;--pretty&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;format:%s
-
-&lt;span class=&quot;c&quot;&gt;# 显示某个commit之后的所有变动，其&quot;提交说明&quot;必须符合搜索条件&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git log &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;tag] HEAD &lt;span class=&quot;nt&quot;&gt;--grep&lt;/span&gt; feature
-
-&lt;span class=&quot;c&quot;&gt;# 显示某个文件的版本历史，包括文件改名&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git log &lt;span class=&quot;nt&quot;&gt;--follow&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file]
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git whatchanged &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file]
-
-&lt;span class=&quot;c&quot;&gt;# 显示指定文件相关的每一次diff&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git log &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file]
-
-&lt;span class=&quot;c&quot;&gt;# 显示过去5次提交&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git log &lt;span class=&quot;nt&quot;&gt;-5&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--pretty&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--oneline&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# 显示所有提交过的用户，按提交次数排序&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git shortlog &lt;span class=&quot;nt&quot;&gt;-sn&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# 显示指定文件是什么人在什么时间修改过&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git blame &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file]
-
-&lt;span class=&quot;c&quot;&gt;# 显示暂存区和工作区的差异&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git diff
-
-&lt;span class=&quot;c&quot;&gt;# 显示暂存区和上一个commit的差异&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git diff &lt;span class=&quot;nt&quot;&gt;--cached&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file]
-
-&lt;span class=&quot;c&quot;&gt;# 显示工作区与当前分支最新commit之间的差异&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git diff HEAD
-
-&lt;span class=&quot;c&quot;&gt;# 显示两次提交之间的差异&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git diff &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;first-branch]...[second-branch]
-
-&lt;span class=&quot;c&quot;&gt;# 显示今天你写了多少行代码&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git diff &lt;span class=&quot;nt&quot;&gt;--shortstat&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;@{0 day ago}&quot;&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# 显示某次提交的元数据和内容变化&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git show &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;commit]
-
-&lt;span class=&quot;c&quot;&gt;# 显示某次提交发生变化的文件&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git show &lt;span class=&quot;nt&quot;&gt;--name-only&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;commit]
-
-&lt;span class=&quot;c&quot;&gt;# 显示某次提交时，某个文件的内容&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git show &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;commit]:[filename]
-
-&lt;span class=&quot;c&quot;&gt;# 显示当前分支的最近几次提交&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git reflog
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;五、同步&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;c&quot;&gt;# 下载远程仓库的所有变动&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git fetch &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;remote]
-
-&lt;span class=&quot;c&quot;&gt;# 显示所有远程仓库&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git remote &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# 显示某个远程仓库的信息&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git remote show &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;remote]
-
-&lt;span class=&quot;c&quot;&gt;# 增加一个新的远程仓库，并命名&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git remote add &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;shortname] &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;url]
-
-&lt;span class=&quot;c&quot;&gt;# 取回远程仓库的变化，并与本地分支合并&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git pull &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;remote] &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;branch]
-
-&lt;span class=&quot;c&quot;&gt;# 上传本地指定分支到远程仓库&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git push &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;remote] &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;branch]
-
-&lt;span class=&quot;c&quot;&gt;# 强行推送当前分支到远程仓库，即使有冲突&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git push &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;remote] &lt;span class=&quot;nt&quot;&gt;--force&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# 推送所有分支到远程仓库&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git push &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;remote] &lt;span class=&quot;nt&quot;&gt;--all&lt;/span&gt;
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;六、撤销&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;c&quot;&gt;# 恢复暂存区的指定文件到工作区&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git checkout &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file]
-
-&lt;span class=&quot;c&quot;&gt;# 恢复某个commit的指定文件到暂存区和工作区&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git checkout &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;commit] &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file]
-
-&lt;span class=&quot;c&quot;&gt;# 恢复暂存区的所有文件到工作区&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git checkout &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# 重置暂存区的指定文件，与上一次commit保持一致，但工作区不变&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git reset &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;file]
-
-&lt;span class=&quot;c&quot;&gt;# 重置暂存区与工作区，与上一次commit保持一致&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git reset &lt;span class=&quot;nt&quot;&gt;--hard&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# 重置当前分支的指针为指定commit，同时重置暂存区，但工作区不变&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git reset &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;commit]
-
-&lt;span class=&quot;c&quot;&gt;# 重置当前分支的HEAD为指定commit，同时重置暂存区和工作区，与指定commit一致&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git reset &lt;span class=&quot;nt&quot;&gt;--hard&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;commit]
-
-&lt;span class=&quot;c&quot;&gt;# 重置当前HEAD为指定commit，但保持暂存区和工作区不变&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git reset &lt;span class=&quot;nt&quot;&gt;--keep&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;commit]
-
-&lt;span class=&quot;c&quot;&gt;# 新建一个commit，用来撤销指定commit&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# 后者的所有变化都将被前者抵消，并且应用到当前分支&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git revert &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;commit]
-
-&lt;span class=&quot;c&quot;&gt;# 暂时将未提交的变化移除，稍后再移入&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git stash
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git stash pop
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-</description>
-        <pubDate>Wed, 23 Jan 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/01/23/github-git/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/01/23/github-git/</guid>
-        
-        <category>学习笔记</category>
-        
-        <category>git</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>上海旅游小攻略</title>
-        <description>&lt;blockquote&gt;
-  &lt;p&gt;以前在上海逛总是想去哪就去哪，从大学到现在毕业也待了好几年了，趁着这次有个好朋友来上海，总结一下这些年在上海的吃喝玩乐。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h1 id=&quot;玩乐篇&quot;&gt;玩乐篇&lt;/h1&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;第一次来上海必去的：&lt;/p&gt;
-
-    &lt;ol&gt;
-      &lt;li&gt;外滩    （包含外滩人行观光隧道）&lt;/li&gt;
-      &lt;li&gt;南京东路&lt;/li&gt;
-      &lt;li&gt;城隍庙&lt;/li&gt;
-      &lt;li&gt;豫园&lt;/li&gt;
-      &lt;li&gt;静安寺&lt;/li&gt;
-      &lt;li&gt;金茂大厦观光层&lt;/li&gt;
-      &lt;li&gt;东方明珠&lt;/li&gt;
-      &lt;li&gt;美杜莎夫人蜡像馆&lt;/li&gt;
-      &lt;li&gt;田子坊&lt;/li&gt;
-      &lt;li&gt;老码头&lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;适合压马路的&lt;/p&gt;
-
-    &lt;ol&gt;
-      &lt;li&gt;武康路（名人故居比较多比较文艺）&lt;/li&gt;
-      &lt;li&gt;思南路&lt;/li&gt;
-      &lt;li&gt;桃江路&lt;/li&gt;
-      &lt;li&gt;余庆路&lt;/li&gt;
-      &lt;li&gt;甜爱路&lt;/li&gt;
-      &lt;li&gt;多伦路名人文化街&lt;/li&gt;
-      &lt;li&gt;衡山路（酒吧比较多）&lt;/li&gt;
-      &lt;li&gt;永康路（酒吧比较多）&lt;/li&gt;
-      &lt;li&gt;静安别墅区&lt;/li&gt;
-      &lt;li&gt;长乐路&lt;/li&gt;
-      &lt;li&gt;复兴西路&lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;适合随意逛的&lt;/p&gt;
-
-    &lt;ol&gt;
-      &lt;li&gt;外白渡桥&lt;/li&gt;
-      &lt;li&gt;新天地酒吧&lt;/li&gt;
-      &lt;li&gt;滨江大道&lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;适合购物&lt;/p&gt;
-
-    &lt;ol&gt;
-      &lt;li&gt;淮海路&lt;/li&gt;
-      &lt;li&gt;南京东路&lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;适合一起出去玩的&lt;/p&gt;
-
-    &lt;ol&gt;
-      &lt;li&gt;上海野生动物园&lt;/li&gt;
-      &lt;li&gt;佘山&lt;/li&gt;
-      &lt;li&gt;欢乐谷&lt;/li&gt;
-      &lt;li&gt;迪士尼&lt;/li&gt;
-      &lt;li&gt;锦江乐园&lt;/li&gt;
-      &lt;li&gt;海洋水族馆&lt;/li&gt;
-      &lt;li&gt;上海科技馆&lt;/li&gt;
-      &lt;li&gt;车墩影视基地（松江）&lt;/li&gt;
-      &lt;li&gt;辰山植物园（松江）&lt;/li&gt;
-      &lt;li&gt;广富林文化遗址（松江）&lt;/li&gt;
-      &lt;li&gt;泰晤士小镇（松江）&lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;文艺园区&lt;/p&gt;
-
-    &lt;ol&gt;
-      &lt;li&gt;M50创意园&lt;/li&gt;
-      &lt;li&gt;1933老厂坊&lt;/li&gt;
-      &lt;li&gt;思南公馆&lt;/li&gt;
-      &lt;li&gt;钟书阁&lt;/li&gt;
-      &lt;li&gt;中华艺术馆&lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;古镇&lt;/p&gt;
-
-    &lt;ol&gt;
-      &lt;li&gt;七宝&lt;/li&gt;
-      &lt;li&gt;朱家角&lt;/li&gt;
-      &lt;li&gt;枫泾&lt;/li&gt;
-      &lt;li&gt;南翔&lt;/li&gt;
-      &lt;li&gt;新场&lt;/li&gt;
-      &lt;li&gt;召稼楼&lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;公园类&lt;/p&gt;
-
-    &lt;ol&gt;
-      &lt;li&gt;世纪公园&lt;/li&gt;
-      &lt;li&gt;人民公园&lt;/li&gt;
-      &lt;li&gt;鲁迅公园&lt;/li&gt;
-      &lt;li&gt;古漪园&lt;/li&gt;
-      &lt;li&gt;滴水湖&lt;/li&gt;
-      &lt;li&gt;月湖雕塑公园&lt;/li&gt;
-      &lt;li&gt;顾村公园&lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h1 id=&quot;吃喝篇&quot;&gt;吃喝篇&lt;/h1&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;小吃类&lt;/p&gt;
-
-    &lt;ol&gt;
-      &lt;li&gt;生煎（小杨生煎）&lt;/li&gt;
-      &lt;li&gt;南翔小笼包&lt;/li&gt;
-      &lt;li&gt;葱油拌面&lt;/li&gt;
-      &lt;li&gt;锅贴&lt;/li&gt;
-      &lt;li&gt;排骨年糕&lt;/li&gt;
-      &lt;li&gt;黄鱼面&lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;小菜类&lt;/p&gt;
-
-    &lt;ol&gt;
-      &lt;li&gt;熏鱼&lt;/li&gt;
-      &lt;li&gt;本帮红烧肉&lt;/li&gt;
-      &lt;li&gt;四喜烤麸&lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;糕点类&lt;/p&gt;
-
-    &lt;ol&gt;
-      &lt;li&gt;青团（沈大成）&lt;/li&gt;
-      &lt;li&gt;葱油饼&lt;/li&gt;
-      &lt;li&gt;蝴蝶酥（哈尔滨食品厂）&lt;/li&gt;
-      &lt;li&gt;蟹壳黄（真老大房、吴宛饼家）&lt;/li&gt;
-      &lt;li&gt;鲜肉月饼（光明邨、老大昌、长春食品厂、泰康）&lt;/li&gt;
-    &lt;/ol&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-</description>
-        <pubDate>Thu, 03 Jan 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/01/03/playinshanghai/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/01/03/playinshanghai/</guid>
-        
-        <category>生活</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>awk脚本学习</title>
-        <description>&lt;blockquote&gt;
-  &lt;p&gt;由于经常要处理日志文件，而里面又有很多的重复文件，故而记录一下awk出重的方法。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h4 id=&quot;awk根据某一列的关键词去重&quot;&gt;awk根据某一列的关键词去重&lt;/h4&gt;
-
-&lt;p&gt;现有文件a.txt&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-4
-5
-6
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@localhost]# &lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;a.txt 
-adc 3 5 
-a d a
-a 3 adf
-a d b
-a 3 adf
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;方法一&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;去重第一列重复的行(第一列都包含a)：&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@localhost]# &lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;a.txt |awk &lt;span class=&quot;s1&quot;&gt;'!a[$1]++{print}'&lt;/span&gt;
-adc 3 5 
-a d a
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;重复的行取最上面一行记录&lt;/p&gt;
-
-&lt;p&gt;去重以第一列和第二列重复的行：&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-4
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@localhost]# &lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;a.txt |awk &lt;span class=&quot;s1&quot;&gt;'!a[$1&quot; &quot;$2]++{print}'&lt;/span&gt;
-adc 3 5 
-a d a
-a 3 adf
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;去除完全重复的行：&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-4
-5
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@localhost]# &lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;a.txt |awk &lt;span class=&quot;s1&quot;&gt;'!a[$0]++{print}'&lt;/span&gt;
-adc 3 5 
-a d a
-a 3 adf
-a d b
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;只显示重复行：&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;root@localhost]# &lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;a.txt |awk &lt;span class=&quot;s1&quot;&gt;'a[$0]++{print}'&lt;/span&gt;
-a 3 adf
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-</description>
-        <pubDate>Wed, 02 Jan 2019 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2019/01/02/awk-quchong/</link>
-        <guid isPermaLink="true">http://localhost:4000/2019/01/02/awk-quchong/</guid>
-        
-        <category>linux</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>写在2018年的最后一天</title>
-        <description>&lt;p&gt;年初的时候，自己还在为安排到了ZPF老师下而感到焦虑，毕竟Z老师是出了名的严格，
-而那时自己身上还有实习，住在延安路校区，每天要在延安路和松江之间来回跑。
-现在想想毕设的日子，自己多半是被ZYM学姐给吓怕了，天天被她催着拿老师曾经不让学生毕业的历史吓我们，
-自己当时也是胆子小，学姐天天要求泡实验室，自己权衡再三还是毕设重要，就把实习辞了，专心回来搞毕设。&lt;/p&gt;
-
-&lt;p&gt;当初毕设的时候这么难，主要原因真的是自己啥都不会，还要硬着头皮跟学姐瞎掰扯，
-那时候对于js、python真的一点都不会，并且已经n久没有写过代码了，
-当时多亏了我的室友，ZPY帮我搭建起的最基础的框架，从django最入门的东西开始教我，
-还有我的高中同学TYR，还在上班的她，听说了我的事情，主动帮我揽过去写前端，真的帮我我天大的忙，虽然最后她忙的要死，但是还是挤出时间帮我改了一点（当时自己做了最不想做的那种人，明知道别人忙的要死，没工夫帮自己自己还硬着头皮让别人帮忙）
-，经这两位的帮忙让我从一个零基础开始对于这些技术有了一个初步的认识，但也仅限于初步，两个多月下来进度还是没怎么动，（自己当时可能已经被吓傻了，都不知道咋学习了，天天就担心老师检查进度）
-还好在实验室里的一起做毕设的康康和我的项目有些关联，有的时候他还能帮帮我，还有实验室里YY,YF,ZWT几个小伙伴的一起奋斗。ZWT大神还是大神，
-在只有我们一半的时间就完成了整个进度，除此之外每天还有萌萌的学姐YZH给我们加油，虽然那段日子稍微有一点苦，不过也是一段美好的回忆，有幸认识了这么多的朋友，尤其是康康。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/in-post/2019-01-01-years-summury/bishe.jpg&quot; alt=&quot;bishe&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;六月是大家最忙的时候，也是大家还能再见几面的日子。现在想想我的毕业咋那么平淡，就连照片都没有拍几张，毕业典礼之后大家就各奔东西了，虽然除了出国的同学大家还都在上海，但有些人可能这辈子都再也不会有见面的机会-了，只会成为回忆中的一个名字。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/in-post/2019-01-01-years-summury/hezhao.jpg&quot; alt=&quot;hezhao&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;除了毕业六月最感谢的就是回家的时候认识了GYY这个新朋友，让我的朋友圈又扩大了一点，希望今年去香港出差能有我的名额，这样我们相约香港的愿望就能实现了。（年级大了记性不好，后来想起是17年寒假认识的）&lt;/p&gt;
-
-&lt;p&gt;（因为毕设的缘故，所以自己没有参加春招）毕业之后就来到了现在的公司，来这个公司也是机缘巧合，当时来面试的时候手里已经有了两份offer，所以笔试啊、面试的时候自己很随意，
-没想到最后自己接受的就是这份offer。运维行业其实是我当时第二的选择，最想进的还是安全行业，但是由于自己的失误错过了绿盟的大好机会
-而错失了进入了安全行业的机会，后期自己也没有太努力找工作，不在投简历了。&lt;/p&gt;
-
-&lt;p&gt;来到易盛也算是我的一个全新的开始，在这里遇到了一路提携我的锴哥、浩哥还有平易近人的部门领导沈大哥，一起进来的小伙伴雷雨，这里的氛围真的很好，感觉就像在学校一样，没有什么勾心斗角，大家一起学习，一起进步，能让我这样的小白慢慢成长。&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/in-post/2019-01-01-years-summury/yisheng.jpg&quot; alt=&quot;yisheng&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;之后的大半年就一直在适应环境、来回搬家，偶尔周末约约HSL、ZDQ、WHY、SM、TYR等几个朋友，虽然生活平淡了点，但也还有条不紊，逐渐步入了一个朝八晚五上班族的日子（也不知道这样子的日子到底是不是自己先想要的）。&lt;/p&gt;
-
-&lt;p&gt;这一年里见证了好多以前的同学结婚，搞的我都非常非常想谈恋爱了，自己和朋友聊天的时候经常吐槽自己单身，还好DL、YBX也是单身的能接受我的吐槽，要不然要被家里追死。&lt;/p&gt;
-
-&lt;p&gt;19年有个最好的朋友国玲可能也要步入婚姻的殿堂了。皮球、达哥、国玲从高中起我们四个关系就特别好，一起互相扯皮，当时就一起讨论谁能第一个结婚，基本和当时想的一样，毕竟她这么恨嫁，哈哈哈哈。我们四人已经有几年没有聚齐过了，毕业之后大家各忙各的，虽然联系变少了，但我们的关系依旧在，再次相聚可能真的要在她的婚礼上了。&lt;/p&gt;
-
-&lt;p&gt;有一个关系很好的、特别特别努力、并且自认为特怂的人，这一年因为各种事联系都减少了，大家都互相有空能约出来的次数变的少之又少了，不过只要能看到你在微博上的吐槽就好，负能量嘛，发泄出来就变正了嘛，不要在意生活中的这点小挫折，开开心心的做个你梦想中的咸鱼不也挺好？&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/img/in-post/2019-01-01-years-summury/ainiyou.jpeg&quot; alt=&quot;ainiyou&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;这一年我也实现了很多小梦想，买了自己的PS4、kindle（虽然有点要吃灰的嫌疑）、组了一台自己的电脑、也在上海有了个自己的小窝，以后也没啥期待的，就先把读书的习惯给培养起来；每天能坚持学习学习、把自己的知识技能提上来；还要减减肥，最近半年这体重成直线飙升；并多思考思考自己以后的路，毕竟人生那么长，不多经历点事怎么对得起这么长人生。最后还希望自己能坚持自己的信条，要为自己的每一次选择负责，人生属于自己，该咋走自己说了算，不要执着后悔自己当初的选择，不卑不亢不怂，长成自己想要的样子。&lt;/p&gt;
-
-</description>
-        <pubDate>Mon, 31 Dec 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018/12/31/years-summury/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018/12/31/years-summury/</guid>
-        
-        <category>随笔</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>windows系统修改启动引导项</title>
-        <description>&lt;blockquote&gt;
-  &lt;p&gt;不重新安装操作系统的前提下，删除/修改不需要的启动项。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;1、在“启动和故障恢复”中可以看到当前系统的启动项，如下图，可修改/删除启动引导顺序。
-&lt;img src=&quot;/img/in-post/2018-10-15-windows-bcd/post-bg-system.jpg&quot; alt=&quot;启动和故障恢复&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;2、使用”bootcfg”DOS命令显示开机启动项：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;win+R打开cmd，需要以管理员方式打开&lt;/li&gt;
-  &lt;li&gt;输入”bcdedit /enum”，列出开机启动项信息，复制需要删除的启动项的”标识符”即”ID”
-&lt;img src=&quot;/img/in-post/2018-10-15-windows-bcd/bcdedit_enum.jpg&quot; alt=&quot;bcdedit&quot; /&gt;&lt;/li&gt;
-  &lt;li&gt;在命令行下输入”bcdedit /delete 标签符”(注意这个标签是包含{}的)命令并按回车键来删除开机启动菜单项。其中“标识符”是通过右击“粘贴”过来的&lt;/li&gt;
-  &lt;li&gt;显示”操作成功完成”时删除成功，通过”bcdedit /enum”命令显示已无不需要的开机启动项了&lt;/li&gt;
-&lt;/ul&gt;
-
-</description>
-        <pubDate>Mon, 15 Oct 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018/10/15/windows-bcd/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018/10/15/windows-bcd/</guid>
-        
-        <category>windows</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>JS IP查询接口</title>
-        <description>&lt;blockquote&gt;
-  &lt;p&gt;由于想在本站底部加一个显示地理位置的功能，故统计了一些js的IP接口。&lt;/p&gt;
-
-  &lt;p&gt;最近一次更新：2018-12-12&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h1 id=&quot;ip地址查询api接口&quot;&gt;IP地址查询API接口&lt;/h1&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;
-    &lt;p&gt;新浪的IP地址查询接口：&lt;code class=&quot;highlighter-rouge&quot;&gt;http://int.dpool.sina.com.cn/ &lt;/code&gt;（测试，已挂）&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;搜狐IP地址查询接口（默认GBK）：&lt;code class=&quot;highlighter-rouge&quot;&gt;http://pv.sohu.com/cityjson&lt;/code&gt;
-    &lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-4
-5
-6
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;returnCitySN&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
- &lt;span class=&quot;s2&quot;&gt;&quot;cip&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;114.114.114.114&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
- &lt;span class=&quot;s2&quot;&gt;&quot;cid&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;CN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
- &lt;span class=&quot;s2&quot;&gt;&quot;cname&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;CHINA&quot;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-  &lt;li&gt;搜狐IP地址查询接口（可设置编码）：&lt;code class=&quot;highlighter-rouge&quot;&gt;http://pv.sohu.com/cityjson?ie=utf-8&lt;/code&gt;
-    &lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-4
-5
-6
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;returnCitySN&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; 
-&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
- &lt;span class=&quot;s2&quot;&gt;&quot;cip&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;114.114.114.114&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
- &lt;span class=&quot;s2&quot;&gt;&quot;cid&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;CN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
- &lt;span class=&quot;s2&quot;&gt;&quot;cname&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;CHINA&quot;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-  &lt;li&gt;搜狐另外的IP地址查询接口：&lt;code class=&quot;highlighter-rouge&quot;&gt;http://txt.go.sohu.com/ip/soip &lt;/code&gt;
-    &lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;nb&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;prototype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getQueryString&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
- &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;reg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;RegExp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;(^|&amp;amp;|&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;\\&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;?)&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;v&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;=([^&amp;amp;]*)(&amp;amp;|$)&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
- &lt;span class=&quot;nx&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
- &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;r&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;match&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;reg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-     &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;unescape&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
- &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
- &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sohu_IP_Loc&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;unknown&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;LocUrl&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;location&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;href&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;LocUrl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;indexOf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;sohusce.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;LocUrl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;indexOf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;sohu.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;LocUrl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;indexOf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;chinaren.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;LocUrl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;indexOf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;17173.com&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;LocUrl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;indexOf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;focus.cn&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
- &lt;span class=&quot;nb&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;sohu_user_ip&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;114.114.114.114&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
- &lt;span class=&quot;nx&quot;&gt;sohu_IP_Loc&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;CN310000&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
- &lt;span class=&quot;nx&quot;&gt;sohu_IP_Loc_V&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;CN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;AdLoc2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sohu_IP_Loc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;substr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;AdLoc4&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sohu_IP_Loc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;substr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
-&lt;span class=&quot;nx&quot;&gt;AdLoc6&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sohu_IP_Loc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;substr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;location&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;href&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getQueryString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ip&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;sohu_IP_Loc&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;AdLoc2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;AdLoc4&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;AdLoc6&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;window&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;location&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;href&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getQueryString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ip&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;IP  API查询接口：&lt;code class=&quot;highlighter-rouge&quot;&gt;http://ip-api.com/json/&lt;/code&gt;　　# 国际化英文显示&lt;/p&gt;
-
-    &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;http://ip-api.com/json/114.114.114.114?lang=zh-CN &lt;/code&gt;     #中文使用&lt;/p&gt;
-    &lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;as&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;AS174 Cogent Communications&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;city&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Beijing&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;country&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;China&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;countryCode&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;CN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;isp&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;China Unicom Shandong Province network&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;lat&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;39.9042&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;lon&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;116.407&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;org&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;NanJing XinFeng Information Technologies, Inc.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;query&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;114.114.114.114&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;region&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;BJ&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;regionName&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Beijing&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;status&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;success&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;timezone&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Asia/Shanghai&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;zip&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h1 id=&quot;查询ip归属地的接口&quot;&gt;查询IP归属地的接口&lt;/h1&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;
-    &lt;p&gt;新浪的IP地址查询接口：&lt;code class=&quot;highlighter-rouge&quot;&gt;http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js&lt;/code&gt;   （经测试，已挂）&lt;/p&gt;
-
-    &lt;p&gt;新浪多地域测试方法：&lt;code class=&quot;highlighter-rouge&quot;&gt;http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js&amp;amp;ip=114.114.114.114&lt;/code&gt;  （经测试，已挂）&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;淘宝的IP地址查询接口：&lt;code class=&quot;highlighter-rouge&quot;&gt;http://ip.taobao.com/service/getIpInfo.php?ip=114.114.114.114&lt;/code&gt;
-    &lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;code&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;data&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-     &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ip&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;114.114.114.114&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-     &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;country&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;中国&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-     &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;area&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-     &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;region&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;江苏&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-     &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;city&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;南京&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-     &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;county&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;XX&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-     &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;isp&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;XX&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-     &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;country_id&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;CN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-     &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;area_id&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-     &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;region_id&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;320000&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-     &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;city_id&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;320100&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-     &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;county_id&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-     &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;isp_id&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;xx&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
- &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;聚合（普通用户被限制次数）的IP地址查询接口：&lt;code class=&quot;highlighter-rouge&quot;&gt;http://apis.juhe.cn/ip/ip2addr?ip=114.114.114.114&amp;amp;dtype=&amp;amp;key=[yourKey]&lt;/code&gt;    (没有申请key所以不贴结果了)&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;太平洋IP地址库API接口：  &lt;code class=&quot;highlighter-rouge&quot;&gt;http://whois.pconline.com.cn/ipJson.jsp?ip=114.114.114.114&amp;amp;json=true&lt;/code&gt;&lt;/p&gt;
-
-    &lt;p&gt;太平洋IP查询的更多接入方式：&lt;code class=&quot;highlighter-rouge&quot;&gt;http://whois.pconline.com.cn/&lt;/code&gt;&lt;/p&gt;
-    &lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ip&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;114.114.114.114&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;pro&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;江苏省&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;proCode&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;320000&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;city&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;南京市&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;cityCode&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;320100&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;region&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;regionCode&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;addr&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;江苏省南京市 电信&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;regionNames&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;err&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-  &lt;li&gt;百度IP查询接口：&lt;code class=&quot;highlighter-rouge&quot;&gt;http://api.map.baidu.com/location/ip?ak=你的密钥&amp;amp;ip=114.114.114.114 &lt;/code&gt;
-    &lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;address&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;CN|江苏|徐州|None|CHINANET|0|0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;content&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-     &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;address_detail&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-         &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;province&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;江苏省&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-         &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;city&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;徐州市&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-         &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;district&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-         &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;street&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-         &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;street_number&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-         &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;city_code&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;316&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-     &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-     &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;address&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;江苏省徐州市&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-     &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;point&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-         &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;y&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;4041039.6&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-         &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;x&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;13045462.3&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-     &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
- &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;status&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-  &lt;li&gt;IPIP查询接口： &lt;code class=&quot;highlighter-rouge&quot;&gt;http://freeapi.ipip.net/118.28.8.8&lt;/code&gt; 免费接口（限速每天1000次，且只提供地理位置）
-    &lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-4
-5
-6
-7
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;中国&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;天津&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;天津&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;鹏博士&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-  &lt;li&gt;IP  API查询中文接口：&lt;code class=&quot;highlighter-rouge&quot;&gt;http://ip-api.com/json/114.114.114.114?lang=zh-CN&lt;/code&gt;　　# 中文显示
-    &lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;as&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;AS174 Cogent Communications&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;city&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;北京&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;country&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;中国&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;countryCode&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;CN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;isp&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;China Unicom Shandong Province network&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;lat&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;39.9042&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;lon&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;116.407&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;org&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;NanJing XinFeng Information Technologies, Inc.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;query&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;114.114.114.114&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;region&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;BJ&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;regionName&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;北京&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;status&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;success&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;timezone&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Asia/Shanghai&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;zip&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;调用方法：
-为解决跨域问题采用JSONP方式，本博客采用的就是这个API
-代码如下：&lt;/p&gt;
-&lt;div class=&quot;language-js highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;span&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;copyright text-muted&quot;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;count&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/span&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
-&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;script&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;application/javascript&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;
-	&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;getgeoip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
-		&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ip&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-		&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Country&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;country&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-		&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;region&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;regionName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;city&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;city&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;IP:&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;ip&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot; Country:&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Country&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot; region:&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;region&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot; city：&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;city&lt;/span&gt;
-        &lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;getElementById&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'geoip'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;innerHTML&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-	&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/script&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
-&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;script&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;application/javascript&quot;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;src&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;//ip-api.com/json?lang=zh-CN&amp;amp;callback=getgeoip&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/script&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;IP  APIde https接口需要付费，所以本站https访问时，无法加载此模块，http访问时可正常访问（暂时还没想到结解决方法）&lt;/p&gt;
-
-&lt;p&gt;IP  API查询接口：http://ip-api.com/json/114.114.114.114　　# 查询某个ip的信息&lt;/p&gt;
-&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-    &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;as&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;AS174 Cogent Communications&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-    &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;city&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Beijing&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-    &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;country&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;China&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-    &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;countryCode&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;CN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-    &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;isp&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;China Unicom Shandong Province network&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-    &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;lat&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;39.9042&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-    &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;lon&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;116.407&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-    &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;org&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;NanJing XinFeng Information Technologies, Inc.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-    &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;query&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;114.114.114.114&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-    &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;region&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;BJ&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-    &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;regionName&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Beijing&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-    &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;status&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;success&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-    &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;timezone&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Asia/Shanghai&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-    &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;zip&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;ol&gt;
-  &lt;li&gt;开源的&lt;a href=&quot;https://github.com/fcambus/telize&quot;&gt;telize&lt;/a&gt;的接口服务，可自行在服务器上搭建接口，免费的可下载的IP数据库：
-    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;http://www.cz88.net/fox/ipdat.shtml&quot;&gt;纯真&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;https://dev.maxmind.com/geoip/geoip2/geolite2/&quot;&gt;maxmind&lt;/a&gt;&lt;/li&gt;
-    &lt;/ul&gt;
-
-    &lt;p&gt;此博主采用这种方式搭建&lt;/p&gt;
-
-    &lt;p&gt;烧饼博客查询接口：&lt;code class=&quot;highlighter-rouge&quot;&gt;https://api.ip.sb/geoip/114.114.114.114&lt;/code&gt;&lt;/p&gt;
-    &lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;table class=&quot;rouge-table&quot;&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class=&quot;rouge-gutter gl&quot;&gt;&lt;pre class=&quot;lineno&quot;&gt;1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;rouge-code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;longitude&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;113.7266&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;latitude&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;34.7725&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;area_code&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;dma_code&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;organization&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;AS174 Cogent Communications&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;country&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;China&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ip&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;114.114.114.114&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;country_code3&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;CHN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;continent_code&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;AS&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
- &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;country_code&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;CN&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-</description>
-        <pubDate>Fri, 12 Oct 2018 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/2018/10/12/js-ip-interface/</link>
-        <guid isPermaLink="true">http://localhost:4000/2018/10/12/js-ip-interface/</guid>
-        
-        <category>JS</category>
-        
-        <category>interface</category>
         
         
       </item>
