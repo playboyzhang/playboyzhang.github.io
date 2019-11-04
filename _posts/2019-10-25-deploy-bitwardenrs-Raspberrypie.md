@@ -28,7 +28,7 @@ tags:
 
 ## 安装Docker
 
-具体安装方法可以看《linux上快速安装docker》。
+具体安装方法可以看[《linux上快速安装docker》](https://daydreamboy.win/2019/10/26/deploy-docker-linux/)。
 
 
 ## 准备bitwarden环境
@@ -122,7 +122,7 @@ tags:
 
 ## 配置HTTPS
 
-这方面的配置可以参考《快速为nginx配置https》。
+这方面的配置可以参考[《快速为nginx配置https》](https://daydreamboy.win/2019/10/30/RegisteredSSL/)。
 
 
 ## 关闭用户注册、关闭 web vault
