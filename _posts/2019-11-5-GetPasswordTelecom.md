@@ -4,7 +4,7 @@ title:       "上海电信E8-C光猫网关密码获取"
 subtitle:    "----telecomadmin 密码 "
 date:        2019-11-5
 author:      "Boy's Zhang"
-header-img:  "img/post-bg-https.png"
+header-img:  "img/post-bg-security.jpg"
 tags:
   - 软路由
   - 路由器
