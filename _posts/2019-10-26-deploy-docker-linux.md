@@ -31,31 +31,77 @@ tags:
 ```
 + 方法三（apt-get/yum安装）：
 
-（此示例为树莓派上安装docker,并不是所有的步骤都需要）首先需要更新一下软件包的索引。
+（此示例为树莓派上安装docker,并不是所有的步骤都需要）
+
+设置树莓派国内源
+
+1、查看树莓派版本
+
+```shell
+pi@raspberrypi:~ $ lsb_release -a
+No LSB modules are available.
+Distributor ID:	Raspbian
+Description:	Raspbian GNU/Linux 10 (buster)
+Release:	10
+Codename:	buster
+```
+
+
+2、使用管理员修改/etc/apt/sources.list
+
+```shell
+sudo cp /etc/apt/sources.list /etc/apt/sources.bak
+
+sudo vim /etc/apt/sources.list
+
+删除所有内容或者注释所有内容
+
+deb http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/ buster main contrib non-free rpi
+deb-src http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/ buster main contrib non-free rpi
+
+根据自己系统版本修改源中的版本
+```
+
+3、使用管理员权限，编辑/etc/apt/sources.list.d/raspi.list文件
+
+```shell
+sudo cp /etc/apt/sources.list.d/raspi.list /etc/apt/sources.list.d/raspi.bak
+
+sudo vim /etc/apt/sources.list.d/raspi.list
+
+删除所有内容或者注释所有内容
+
+deb http://mirror.tuna.tsinghua.edu.cn/raspberrypi/ buster main ui
+deb-src http://mirror.tuna.tsinghua.edu.cn/raspberrypi/ buster main ui
+
+根据自己系统版本修改源中的版本
+
+
+```
+
+
+4、首先需要更新一下软件包的索引。
 
 ```
   sudo apt-get update
 ```
-安装 HTTPS 所依赖的包，使apt-get可以通过https进行下载
+5、安装 HTTPS 所依赖的包，使apt-get可以通过https进行下载
 ```
     sudo apt-get install apt-transport-https ca-certificates software-properties-common
 ```
+/6、添加 Docker 的 GPG key
+```
+  curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+```
+7、设置docker源
+```shell
+echo "deb [arch=armhf] https://download.docker.com/linux/debian \
+     $(lsb_release -cs) stable" | \
+    sudo tee /etc/apt/sources.list.d/docker.list
+```
 
-添加 Docker 的 GPG key
-```
-  curl -fsSL https://yum.dockerproject.org/gpg | sudo apt-key add -
-```
-验证 key id:
-```
-    apt-key fingerprint 58118E89F3A912897C070ADBF76221572C52609D（此处key为上一步获取）
-```
-设置稳定的 repository:
-```
-    sudo add-apt-repository "deb https://apt.dockerproject.org/repo/raspbian-$(lsb_release -cs)main"
-```
-注意：如果 add-apt-repository 命令遇到问题，可以尝试将下面这行添加到树莓派软件源 sources.list，操作如下：
-```
-sudo vim /etc/apt/sources.list
+
+或者sudo vim /etc/apt/sources.list
 ```
 添加一行：
 ```
@@ -65,7 +111,7 @@ sudo vim /etc/apt/sources.list
 ```
     lsb_release -cs
 ```
-安装 Docker
+8、安装 Docker
 ```
     sudo apt-get update
     sudo apt-get -y install docker-engine
