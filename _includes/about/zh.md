@@ -1,10 +1,9 @@
->  上九天揽月 
->  下五洋捉鳖
+>   less is more
 
 
-Hey，我是**Boy's Zhang**，今年刚大学毕业，现工作在上海，从事系统运维方向的工作。
+我是**Boy's Zhang**，2018年7月毕业后一直工作在上海，从事系统运维方向的工作。
 
-曾在多个网站中都取过包含BOY的ID，所以对于这个昵称很喜欢（**playboy**，**sillyboy**，**daydreamboy**都是我）。
+曾在多个网站中都取过包含BOY的ID（**playboy**，**sillyboy**，**daydreamboy**都是我）。
 
 有的时候因为被占用所以还会经常会在ID后面加个zhang。
 
