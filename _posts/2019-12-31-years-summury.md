@@ -11,7 +11,7 @@ tags:
 
 
 
-<center><font face="黑体" size=10 color="black">[兴趣]</font></center>
+<p><center><font face="黑体" size=10 color="black">[兴趣]</font></center></p>
 
 
 
@@ -33,7 +33,7 @@ kindle今年年末的时候终于下下定决心卖了，为他找个好的下�
 ![Tiananmen](/img/in-post/2019-12-31-years-summury/Tiananmen.jpg)
 
 
-<center><font face="黑体" size=10 color="black">[感情]</font></center>
+<p><center><font face="黑体" size=10 color="black">[感情]</font></center></p>
 感情上几年算是有了点大突破？和她在一起真的要感谢老同学TYR，帮我和她搭了根线，和她在一起感觉确实是自己意识头脑发热，但是感情这东西谁说不是冲动的产物，后面两个人尝试在一起了几个月。最后不在一起 也算是对我们两个都好。
 
 ![girlfriend](/img/in-post/2019-12-31-years-summury/girlfriend.jpg)
@@ -49,12 +49,12 @@ I know I'm not the perfect guy. I actually kind of hate myself a lot of the time
 
 
 
-<center><font face="黑体" size=10 color="black">[工作]</font></center>
+<p><center><font face="黑体" size=10 color="black">[工作]</font></center></p>
 
 工作上算是平平稳稳，枯燥而无聊，收入先就仅仅靠着工资也没啥个副业。虽然自己一直在嚷嚷着换工作，但是也总是没个动静，拖延着。五月的时候两个同事离职对我蛮大感触了，不能就这么在公司呆废了，总的要对自己的人生负责，做点正事。也是从今年开始有记笔记、做规划的习惯（虽然每个月的规划都完不成），年末涨了这点工资和没涨一样，越在公司待着就越感觉像温水煮青蛙一样，自己再补努力就真的跳不出去这口大锅了。人生真的要靠自己努力！
 
 
-<center><font face="黑体" size=10 color="black">[生活]</font></center>
+<p><center><font face="黑体" size=10 color="black">[生活]</font></center></p>
 今年还去了两次野生动物园，对从小到大没有去过动物园的我来说真的好满足，也算完成了儿时的愿望。也是这次接待了好朋友GYY，陪她在上海转了转，而且还把她当成我第一次拍照的模特。
 
 ![birthday](/img/in-post/2019-12-31-years-summury/birthday.jpg)
@@ -73,7 +73,7 @@ I know I'm not the perfect guy. I actually kind of hate myself a lot of the time
 
 
 
-<center><font face="黑体" size=10 color="black">[未来]</font></center>
+<p><center><font face="黑体" size=10 color="black">[未来]</font></center></p>
 
 研究生这个话题，其实一直都是我自己在逃避，总是给自己借口不去考虑研究生。进了大学之后我真的很放纵自己，就像有人说的被压抑了好多年的情绪都在大学释放出来了，大学阶段自己是真的不爱学习，完全没有以前学习的那种劲头了。这一年很多人问过我，问我为什么不继续考研究生，可能真的就是自己不想再学习了，为胆小的自己找个借口。
 
@@ -90,7 +90,11 @@ I know I'm not the perfect guy. I actually kind of hate myself a lot of the time
 
 
 2019年
+
 我也不是一无所获
+
 至少，接受了自己的平庸
+
 2020年
+
 而我真正想干事究竟是什么！
