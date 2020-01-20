@@ -11,7 +11,7 @@ tags:
 
 
 
-#<center>[兴趣]</center>
+<p style="color:red;text-align:center;font-size:20px;" >[兴趣]</p>
 
 
 
