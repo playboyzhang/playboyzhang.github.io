@@ -152,6 +152,10 @@ Let’s Encrypt是一家免费开放的证书颁发机构，支持申请泛域�
 
     30 3 * * * /usr/bin/certbot renew  >> /var/log/le-renew.log
 
+###freessl
+可选TRUSTAsia（一年双域名）和Let's Encrypt V2（三个月通配符多域名）
+我这里部署bitwarden使用的是TRUSTAsia（一年双域名），部署我这里选择的也是txt域名验证
+[官网地址](https://freessl.cn/ "官网地址")
 
 
 ## nginx配置
@@ -186,4 +190,3 @@ Let’s Encrypt是一家免费开放的证书颁发机构，支持申请泛域�
 
 
 
-暂时使用这些，后续还会补充。
