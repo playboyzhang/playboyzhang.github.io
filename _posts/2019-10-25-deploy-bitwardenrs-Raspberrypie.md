@@ -35,19 +35,19 @@ tags:
 
 假设你准备在主目录中存放数据，新建一个目录：
 ```
-    cd ~ && mkdir bitwarden && cd bitwarden
-    pwd
-    # 应当输出 /home/username/bitwarden
+cd ~ && mkdir bitwarden && cd bitwarden
+pwd
+# 应当输出 /home/username/bitwarden
 ```
 准备一个配置文件：
 ```
-    cat >> config.env <<EOF
-    SIGNUPS_ALLOWED=true 
-    DOMAIN=https://example.com 
-    DATABASE_URL=/data/bitwarden.db 
-    ROCKET_WORKERS=10
-    WEB_VAULT_ENABLED=true 
-    EOF
+cat >> config.env <<EOF
+SIGNUPS_ALLOWED=true 
+DOMAIN=https://example.com 
+DATABASE_URL=/data/bitwarden.db 
+ROCKET_WORKERS=10
+WEB_VAULT_ENABLED=true 
+EOF
 ```
 以上配置文件的说明：
 
@@ -59,20 +59,20 @@ tags:
 
 准备服务描述文件：
 ```
-    cat >> docker-compose.yml <<EOF
-    version: '3'
-    services:
-    bitwarden: 
+cat >> docker-compose.yml <<EOF
+version: '3'
+services:
+  bitwarden: 
     image: bitwardenrs/server:raspberry 
     container_name: bitwarden
     restart: always
     volumes:
-    - ./data:/data 
+      - ./data:/data 
     env_file:
-    - config.env
+      - config.env
     ports:
-    - "6666:80" 
-    EOF
+      - "3456:80" 
+EOF
 ```
 这个文件主要描述了这些内容：
 
@@ -106,17 +106,28 @@ tags:
 
 ```
     server {
-	listen 80 ;
+    listen 443 ;
 
-	server_name example.com;	 #换成你自己的域名，需要到域名服务商修改对应的dns记录
-	location / {
-            proxy_pass http://192.168.1.101:6666/;   #修改为bitwarden的ip和端口
-            proxy_set_header Host $host;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    server_name example.com;	
+    
+    ssl on;
+    ssl_certificate /etc/nginx/ca/fullchain.pem;   （此目录为我的证书存放位置）
+    ssl_certificate_key /etc/nginx/ca/privkey.pem;
+    
+    ssl_session_timeout 5m;
+    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;  
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2 ;
+    ssl_prefer_server_ciphers on;   
+    location / {
+              proxy_pass http://192.168.1.101:3456/;
+              proxy_redirect off;
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 
-        } 
- 
-	}
+          } 
+  
+    }
 
 ```
 
@@ -168,10 +179,9 @@ tags:
 
     经尝试更换https证书，关闭系统代理等登陆均未修复，后尝试放行http服务，将地址改为http://192.168.1.100后修复
 ```
-```
-    网络解决方法：查看群晖及容器都没有相关的日志记录，猜测是没有和服务端建立连接，最后测试发现和 Windows 系统代理设置有关。打开 “Windows 设置-网络和 Internet-代理”，关闭使用设置脚本即可。
-```
+
+
 andrion与ios端登陆问题，可能为https证书导致，后续尝试更换证书提供商。
 
 ---------------------------------------------------
-后又再次部署一次，发现是由于申请的https证书导致，更换https证书解决所有不能不能登录问题。
+后又再次部署一次，发现是由于申请的https证书导致，更换https证书可以解决所有不能登录问题。
