@@ -240,7 +240,7 @@ iptables -A FORWARD -i wlan0 -o eth0 -j ACCEPT
 
 # 永久保存防火墙策略
 # 创建文件
-sudo sh -c “iptables-save > /etc/iptables.ipv4.nat”
+sudo sh -c "iptables-save > /etc/iptables.ipv4.nat"
 # 修改系统，添加启动任务：
 pi@raspberrypi:~ $ sudo vim /etc/rc.local
 sh -c "echo 1 > /proc/sys/net/ipv4/ip_forward"
@@ -261,6 +261,9 @@ systemctl  restart udhcpd
 + 配置文件名称拼错字母
 + 配置中存在中文字符
 + 错误基本都在日志中，细心查看日志都可以配置成功
++ Failed to restart hostapd.service: Unit hostapd.service is masked.
+  解决方法：
+          systemctl umask hostapd
 
 
 
