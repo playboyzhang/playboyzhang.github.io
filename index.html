@@ -15,7 +15,11 @@ description: "愿你保持独立思考，不卑不亢不怂，长成自己想要
         </h3>
         {% endif %}
         <div class="post-content-preview">
+        {% if post.lang == 'en' %}
+            {{ post.content | strip_html | truncate:300 }}
+        {% else %}
             {{ post.content | strip_html | truncate:200 }}
+        {% endif %}
         </div>
     </a>
     <p class="post-meta">

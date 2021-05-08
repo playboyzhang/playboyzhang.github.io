@@ -4,13 +4,14 @@ SEOTitle: 立伟的博客 | Boy's Zhang
 header-img: img/public-post/post-bg-desk.jpg
 email: sillyboyzhang@gmail.com
 description: "Every failure is leading towards success."
-keyword: "立伟, Boy's Zhang，一只刚刚本科毕业的运维攻城狮，对未来充满干劲"
+keyword: "levi，废柴"
 url: "http://playboyzhang.github.io"          # your host, for absolute URL
 baseurl: ""      # for example, '/blog' if your blog hosted on 'host/blog'
 github_repo: "https://github.com/playboyzhang/playboyzhang.github.io.git" # you code repository
 
 
-
+# Publish posts or collection documents with a future date.
+future: true
 
 # SNS settings 社交账号
 RSS: true
