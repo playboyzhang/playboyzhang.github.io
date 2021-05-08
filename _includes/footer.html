@@ -69,11 +69,7 @@
 
     </script>
 
-<script>
-    var xlm_wid='1xxxx';
-    var xlm_url='https://www.xianliao.me/';
-</script>
-<script type='text/javascript' charset='UTF-8' src='https://www.xianliao.me/embed.js'></script>
+
 
 
 <!-- jQuery -->
@@ -84,6 +80,11 @@
 
 <!-- Custom Theme JavaScript -->
 <script src="{{ "/js/hux-blog.min.js " | prepend: site.baseurl }}"></script>
+
+
+<!-- Simple Jekyll Search -->
+<script src="{{ "/js/simple-jekyll-search.min.js" | prepend: site.baseurl }}"></script>
+
 
 
 <!-- Service Worker -->
@@ -122,6 +123,26 @@
     </script>
     <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
 -->
+
+{% if page.plchart %}
+<!-- jquery.tagcloud.js -->
+<script>
+    // https://stackoverflow.com/questions/9975810/make-iframe-automatically-adjust-height-according-to-the-contents-without-using
+    function resizeIframe(obj) {
+        obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
+    }
+
+    $(document).ready(function () {
+        var $chart = document.querySelector("#chart");
+        $chart.onload = function () {
+            resizeIframe($chart)
+        }
+        window.addEventListener("resize", () => {
+            resizeIframe($chart)
+        });
+    })
+</script>
+{% endif %}
 
 {% if page.title == 'Archive' %}
 <!-- jquery.tagcloud.js -->
@@ -296,6 +317,65 @@
     _render();
 </script>
 {% endif %}
+
+<!-- Simple Jekyll Search -->
+<script>
+    // https://stackoverflow.com/questions/1912501/unescape-html-entities-in-javascript
+    function htmlDecode(input) {
+        var e = document.createElement('textarea');
+        e.innerHTML = input;
+        // handle case of empty input
+        return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+    }
+
+    SimpleJekyllSearch({
+        searchInput: document.getElementById('search-input'),
+        resultsContainer: document.getElementById('search-results'),
+        json: '/search.json',
+        searchResultTemplate: '<div class="post-preview item"><a href="{url}"><h2 class="post-title">{title}</h2><h3 class="post-subtitle">{subtitle}</h3><hr></a></div>',
+        noResultsText: 'No results',
+        limit: 50,
+        fuzzy: false,
+        // a hack to get escaped subtitle unescaped. for some reason, 
+        // post.subtitle w/o escape filter nuke entire search.
+        templateMiddleware: function (prop, value, template) {
+            if (prop === 'subtitle' || prop === 'title') {
+                if (value.indexOf("code")) {
+                    return htmlDecode(value);
+                } else {
+                    return value;
+                }
+            }
+        }
+    });
+
+    $(document).ready(function () {
+        var $searchPage = $('.search-page');
+        var $searchOpen = $('.search-icon');
+        var $searchClose = $('.search-icon-close');
+        var $searchInput = $('#search-input');
+        var $body = $('body');
+
+        $searchOpen.on('click', function (e) {
+            e.preventDefault();
+            $searchPage.toggleClass('search-active');
+            var prevClasses = $body.attr('class') || '';
+            setTimeout(function () {
+                $body.addClass('no-scroll');
+            }, 400)
+
+            if ($searchPage.hasClass('search-active')) {
+                $searchClose.on('click', function (e) {
+                    e.preventDefault();
+                    $searchPage.removeClass('search-active');
+                    $body.attr('class', prevClasses);  // from closure 
+                });
+                $searchInput.focus();
+            }
+        });
+    });
+</script>
+
 <a id="rocket" href="#top" class=""></a>
 <script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
 <script type="text/javascript" src="/js/toc.js?v=1.0.0" async=""></script>
