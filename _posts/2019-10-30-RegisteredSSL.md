@@ -3,7 +3,7 @@ layout:      post
 title:       "快速为nginx配置https"
 subtitle:    "----Let's Encrypt "
 date:        2019-10-30
-author:      "Boy's Zhang"
+author:      "levi"
 header-img:  "img/post-bg-https.png"
 tags:
   - nginx
@@ -77,7 +77,7 @@ Let’s Encrypt是一家免费开放的证书颁发机构，支持申请泛域�
 
 [官网链接](https://www.sslforfree.com/#tutorials "注册")
 
-![sslforfree](/img/in-post\2019-10-30-RegisteredSSL/sslforfree.png)
+![sslforfree.png](https://i.loli.net/2021/05/09/EOeKFtuJWfVXAUq.png)
 
 注册流程非常简单，跟着一步步做就可以了，自动续期方法暂时还没有找到，以后找到了回来填个坑。
 
@@ -136,7 +136,7 @@ Let’s Encrypt是一家免费开放的证书颁发机构，支持申请泛域�
   
 根据提示一步步，然后需要在域名提供商出添加txt记录
 
-![namecheap](/img/in-post\2019-10-30-RegisteredSSL/namecheap.png)
+![namecheap.png](https://i.loli.net/2021/05/09/dnPOiRBvut1Ey9G.png)
 
 之后输入enter后结束
 

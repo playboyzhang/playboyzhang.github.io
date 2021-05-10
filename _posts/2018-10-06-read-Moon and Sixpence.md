@@ -3,7 +3,7 @@ layout:      post
 title:       "读书笔记"
 subtitle:    "------月亮与六便士"
 date:        2018-10-06
-author:      "Boy's Zhang"
+author:      "levi"
 header-img:  "img/post-bg-Moon and Sixpence.jpg"
 tags:
   - 读书

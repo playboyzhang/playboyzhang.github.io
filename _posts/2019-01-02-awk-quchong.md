@@ -3,7 +3,7 @@ layout:      post
 title:       "awk脚本学习"
 subtitle:    "文本去重"
 date:        2019-01-02
-author:      "Boy's Zhang"
+author:      "levi"
 header-img:  "img/post-bg-Shell-Script.jpg"
 tags:
   - linux

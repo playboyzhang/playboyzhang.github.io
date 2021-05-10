@@ -3,7 +3,7 @@ layout:      post
 title:       "JS IP查询接口"
 subtitle:    "IP地址与归属地查询"
 date:        2018-10-12
-author:      "Boy's Zhang"
+author:      "levi"
 header-img:  "img/post-bg-js-interface.jpg"
 tags:
   - JS

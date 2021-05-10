@@ -3,7 +3,7 @@ layout:      post
 title:       "git学习笔记"
 subtitle:    "----github常用命令总结"
 date:        2019-01-23
-author:      "Boy's Zhang"
+author:      "levi"
 header-img:  "img/post-bg-github-cup.jpg"
 tags:
   - 学习笔记
@@ -26,15 +26,15 @@ ssh-keygen -t rsa -C "[email@email.com]"
 
 ​   把`id_rsa.pub`文件里的内容复制到这里
 
-![in-pot-github-contact](/img/in-post/2019-01-23-github/in-pot-github-contact.png)
+![in-pot-github-contact.png](https://i.loli.net/2021/05/09/OcxYdilhqVbnj45.png)
 
-![in-pot-github-sshkeys](/img/in-post/2019-01-23-github/in-pot-github-sshkeys.png)
+![in-pot-github-sshkeys.png](https://i.loli.net/2021/05/09/pEn4QJLSOIoCUjq.png)
 
-![in-pot-github-addsshkey](/img/in-post/2019-01-23-github/in-pot-github-addsshkey.png)
+![in-pot-github-addsshkey.png](https://i.loli.net/2021/05/09/OjGYuNkMX9egIPv.png)
 
-![in-post-github-commitssh](/img/in-post/2019-01-23-github/in-post-github-commitssh.png)
+![in-post-github-commitssh.png](https://i.loli.net/2021/05/09/MaFn8bhYgPpmGxS.png)
 
-![in-post-github-addpanel](/img/in-post/2019-01-23-github/in-post-github-addpanel.png)
+![in-post-github-addpanel.png](https://i.loli.net/2021/05/09/aIspzUtcxQObfnq.png)
 
 2、测试连通性
 
@@ -55,7 +55,7 @@ Are you sure you want to continue connecting (yes/no)?
 
 根据[阮一峰老师](http://www.ruanyifeng.com/blog/2015/12/git-cheat-sheet.html)的总结我自己摘抄了一些自己经常用到的命令
 
-基本的原理图如下![in-post-github-table](/img/in-post/2019-01-23-github/in-post-github-table.png)
+基本的原理图如下![in-post-github-table.png](https://i.loli.net/2021/05/09/Zt8flzmEvdJDTBA.png)
 
 几个专用名词的译名如下：
 

@@ -85,7 +85,7 @@ ba_track_id: 7ea44a295df5cf05019a13cb31d0c7f7
 
 # Google Analytics
 ga_track_id: 'G-0NXFE5Q01J'            # Format: UA-xxxxxx-xx
-ga_domain: daydreamboy.win               # 默认的是 auto, 这里我是自定义了的域名，你如果没有自己的域名，需要改成auto
+ga_domain: levi.work               # 默认的是 auto, 这里我是自定义了的域名，你如果没有自己的域名，需要改成auto
 
 
 

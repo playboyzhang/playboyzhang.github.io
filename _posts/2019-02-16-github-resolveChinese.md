@@ -3,7 +3,7 @@ layout:      post
 title:       "git学习笔记"
 subtitle:    "----git中文文件"
 date:        2019-02-16
-author:      "Boy's Zhang"
+author:      "levi"
 header-img:  "img/post-bg-github-cup.jpg"
 tags:
   - 学习笔记
@@ -13,7 +13,7 @@ tags:
 > git上解决中文文件显示、修改、提交问题
 
 一般git本地仓库命名的中文文件会在本地以这种形式存在
-![in-pot-github-contact](/img/in-post/2019-02-16-github-resolveChinese/WrongChinese.png)
+![WrongChinese.png](https://i.loli.net/2021/05/09/gsv29yOKB3WVlnb.png)
 
 故而在修改或者删除时不管加不加git提示的那个双引号，用git删除时都会提示路径找不到
 

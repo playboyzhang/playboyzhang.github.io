@@ -3,7 +3,7 @@ layout:      post
 title:       "树莓派3B+变成WiFi热点"
 subtitle:    "----hostapd udhcpd "
 date:        2019-12-10
-author:      "Boy's Zhang"
+author:      "levi"
 header-img:  "img/post-bg-MakePiWireless.jpg"
 tags:
   - 软路由

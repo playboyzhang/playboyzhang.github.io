@@ -3,7 +3,7 @@ layout:      post
 title:       "上海旅游小攻略"
 subtitle:    "吃喝玩乐"
 date:        2019-01-03
-author:      "Boy's Zhang"
+author:      "levi"
 header-img:  "img/post-bg-shanghai.jpg"
 tags:
   - 生活

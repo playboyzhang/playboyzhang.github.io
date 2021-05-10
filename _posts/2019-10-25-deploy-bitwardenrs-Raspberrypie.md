@@ -3,7 +3,7 @@ layout:      post
 title:       "树莓派部署bitwardenrs"
 subtitle:    "----家庭密码中心"
 date:        2019-10-25
-author:      "Boy's Zhang"
+author:      "levi"
 header-img:  "img/post-bg-bitwarden.jpg"
 tags:
   - linux
@@ -133,7 +133,7 @@ EOF
 
 ## 配置HTTPS
 
-这方面的配置可以参考[《快速为nginx配置https》](https://daydreamboy.win/2019/10/30/RegisteredSSL/)。
+这方面的配置可以参考[《快速为nginx配置https》](https://levi.work/2019/10/30/RegisteredSSL/)。
 
 
 ## 关闭用户注册、关闭 web vault

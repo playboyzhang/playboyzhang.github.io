@@ -3,7 +3,7 @@ layout:      post
 title:       "RHCSA考试总结"
 subtitle:    "----题目及答案分享"
 date:        2019-10-19
-author:      "Boy's Zhang"
+author:      "levi"
 header-img:  "img/post-bg-redhat.jpg"
 tags:
   - linux

@@ -3,7 +3,7 @@ layout:      post
 title:       "jekyll本地环境搭建"
 subtitle:    "----windows下安装记录"
 date:        2018-10-01
-author:      "Boy's Zhang"
+author:      "levi"
 header-img:  "img/post-bg-jekyll.jpg"
 catalog:     true
 tags:
@@ -22,17 +22,17 @@ tags:
 ### 安装ruby+devkit
 首先到官网下载exe，链接[地址](https://rubyinstaller.org/downloads/)
 
-![download](/img/in-post/2018-10-01-jekyll-windows/download.png)
+![download.png](https://i.loli.net/2021/05/09/mkAjVLHXDsgGIYb.png)
 
 由于已经打包好了，根据自己的机型选择一个exe下载就好，我选择的是上一个版本2.4.5-1(x64)
 
 跟着一路点下去安装就好，需要注意的就是要安装在根目录，还有要把环境变量也勾上
 
-![setup-ruby-devkit](/img/in-post/2018-10-01-jekyll-windows/setup-ruby-devkit.png)
+![setup-ruby-devkit.png](https://i.loli.net/2021/05/09/zSm1RJAEpurDWfy.png)
 
 之后弹出来一个安装选项，选择3全部安装就好
 
-![MSYS](/img/in-post/2018-10-01-jekyll-windows/MSYS.png)
+![MSYS.png](https://i.loli.net/2021/05/09/15P9x2zjQSeOv3h.png)
 
 安装好之后测试一下环境
 ```
@@ -41,7 +41,7 @@ gem -v
 ```
 如果都有版本输出，就可以安装jekyll了
 
-![ruby-gem-v](/img/in-post/2018-10-01-jekyll-windows/ruby-gem-v.png)
+![ruby-gem-v.png](https://i.loli.net/2021/05/09/GvtaUwucrqOf3NS.png)
 
 
 ### 安装jekyll
@@ -52,11 +52,11 @@ gem install jekyll
 
 jekyll -v
 
-![jekyll-v](/img/in-post/2018-10-01-jekyll-windows/jekyll-v.png)
+![jekyll-v.png](https://i.loli.net/2021/05/09/fUEeBsK6XIYP2vj.png)
 
 之后就可以输入jekyll serve开启本地的环境了
 
-![jekyll-serve](/img/in-post/2018-10-01-jekyll-windows/jekyll-serve.png)
+![jekyll-serve.png](https://i.loli.net/2021/05/09/6fn4usEB58AlJaL.png)
 ### 遇到的问题
 
 1、最后一步安装完成之后，出现错误

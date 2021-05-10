@@ -3,7 +3,7 @@ layout:      post
 title:       "linux上快速安装docker"
 subtitle:    "----安装与简单使用"
 date:        2019-10-26
-author:      "Boy's Zhang"
+author:      "levi"
 header-img:  "img/post-bg-docker.jpg"
 tags:
   - linux

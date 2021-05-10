@@ -3,7 +3,7 @@ layout:      post
 title:       "python学习记录"
 subtitle:    "io模块分割文件"
 date:        2018-10-08
-author:      "Boy's Zhang"
+author:      "levi"
 header-img:  "img/post-bg-python.jpg"
 tags:
   - python

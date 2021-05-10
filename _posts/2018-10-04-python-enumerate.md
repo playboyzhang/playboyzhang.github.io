@@ -3,8 +3,9 @@ layout:      post
 title:       "python学习记录"
 subtitle:    "enumerate函数"
 date:        2018-10-04
-author:      "Boy's Zhang"
+author:      "levi"
 header-img:  "img/post-bg-python.jpg"
+catalog:     false
 tags:
   - python
   - enumerate()

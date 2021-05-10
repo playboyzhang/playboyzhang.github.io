@@ -3,7 +3,7 @@ layout:      post
 title:       "python学习记录"
 subtitle:    "----元组、列表、字符串排序"
 date:        2019-02-03
-author:      "Boy's Zhang"
+author:      "levi"
 header-img:  "img/post-bg-python-str.png"
 tags:
   - python

@@ -3,7 +3,7 @@ layout:      post
 title:       "git学习笔记"
 subtitle:    "----git冲突解决"
 date:        2019-01-25
-author:      "Boy's Zhang"
+author:      "levi"
 header-img:  "img/post-bg-github-cup.jpg"
 tags:
   - 学习笔记
